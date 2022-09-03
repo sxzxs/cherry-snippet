@@ -69,6 +69,7 @@ main()
         static auto_english := g_config["auto_english"]
         static tooltip_help := g_config["tooltip_help"]
         static python_path := g_config["python_path"]
+        static is_show_logo := g_config["is_show_logo"]
         static cherry_tree_path := g_config["cherry_tree_path"]
         static db_path := g_config["db_path"]
         static win_trans := g_config["win_trans"]
@@ -119,6 +120,7 @@ main()
                 _ImGui_InputText("是否自动切换为英文[0/1]##auto_english", &auto_english)
                 _ImGui_InputText("是否提示帮助信息[0/1]##tooltip_help", &tooltip_help)
                 _ImGui_InputText("python解释器路径##python_path", &python_path)
+                _ImGui_InputText("是否显示logo##is_show_logo", &is_show_logo)
                 _ImGui_InputText("cherry tree路径##cherry_tree_path", &cherry_tree_path)
                 _ImGui_InputText(".ctb数据文件路径##db_path", &db_path)
                 _ImGui_InputText("win_trans##win_trans", &win_trans)
@@ -153,6 +155,7 @@ main()
             g_config["tooltip_help"] := tooltip_help
 
             g_config["python_path"] := python_path
+            g_config["is_show_logo"] := is_show_logo
             g_config["cherry_tree_path"] := cherry_tree_path
             g_config["db_path"] := db_path
 

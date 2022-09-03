@@ -113,6 +113,9 @@ Gui, Add, Edit, vtooltip_help xs+0 yp+0 w80,% g_config.tooltip_help
 Gui, Add, Text, xm, python解释器路径
 Gui, Add, Edit, vpython_path xs+0 yp+0 w160,% g_config.python_path
 
+Gui, Add, Text, xm, 是否显示LOGO
+Gui, Add, Edit, vis_show_logo xs+0 yp+0 w160,% g_config.is_show_logo
+
 Gui, Add, Text, xm, cherryTree路径
 Gui, Add, Edit, vcherry_tree_path xs+0 yp+0 w160,% g_config.cherry_tree_path
 
@@ -161,6 +164,7 @@ g_config.tooltip_help := tooltip_help
 g_config.win_trans := win_trans
 
 g_config.python_path := python_path
+g_config.is_show_logo := is_show_logo
 g_config.cherry_tree_path := cherry_tree_path
 g_config.db_path := db_path
 
@@ -201,6 +205,7 @@ GuiControl,, win_trans , 222
 
 
 GuiControl,, python_path, C:\Python310\python.exe
+GuiControl,, is_show_logo, 1
 GuiControl,, cherry_tree_path, C:\Python310\cherry_tree_path.exe
 GuiControl,, db_path, C:\Python310\test.ctb
 Gosub, setting
