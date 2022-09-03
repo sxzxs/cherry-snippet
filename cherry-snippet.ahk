@@ -692,7 +692,8 @@ filter(cmds, query, ByRef count, ByRef rows, ByRef row_id)
         {
             arr_result.Push(k)
             row_id[real_index] := arr_cmds[k]
-            rows .= "|"  real_index " "  arr_cmds[k]
+            tmp := substr(arr_cmds[k], instr(arr_cmds[k], "]") + 1)
+            rows .= "|"  real_index " "  tmp
             real_index++
         }
     }
@@ -867,14 +868,14 @@ db_parse(DB)
                     MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
                 log.info(Result["rows"][1][2])
                 
-                path_string := Result["rows"][1][2] "$ >" path_string
+                path_string := Result["rows"][1][2] "-" path_string
                 log.info(path_string)
                 id_path[k]["father_id"].Push(v)
             }
             else
             {
                 id_path[k]["father_id"].Push(0)
-                id_path[k]["path"] := path_string "$ #" k
+                id_path[k]["path"] :=  "[" k "]" path_string 
                 break
             }
             v := map_father[v]
