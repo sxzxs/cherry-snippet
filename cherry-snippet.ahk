@@ -112,7 +112,7 @@ global g_my_menu_map := { "编辑当前命令: " convert_key2str(g_config.key_ed
                             , "编辑全部命令: " convert_key2str(g_config.key_open_editor) : ["open_editor", A_ScriptDir "\Icons\编辑全部.ico"]
                             , "发送到窗口: " convert_key2str(g_config.key_send) : ["label_send_command", A_ScriptDir "\Icons\发送.ico"]
                             , "复制结果: " convert_key2str(g_config.key_open_search_box) : ["label_menu_copy_data", A_ScriptDir "\Icons\复制.ico"]
-                            , "设置v2" : ["open_setv2", A_ScriptDir "\Icons\设置.ico"]
+                            , "设置[Need DX11]" : ["open_setv2", A_ScriptDir "\Icons\设置.ico"]
                             , "设置" : ["open_set", A_ScriptDir "\Icons\设置.ico"]}
 g_text_rendor.RenderOnScreen(help_string, "t: 5seconds x:left y:top pt:2", "s:15 j:left ")
 
@@ -166,8 +166,8 @@ Menu, Tray, add, 帮助,  open_github
 Menu, Tray, icon, 帮助,% A_ScriptDir "\Icons\帮助.ico"
 Menu, Tray, add, 设置,  open_set
 Menu, Tray, icon, 设置,% A_ScriptDir "\Icons\设置.ico"
-Menu, Tray, add, 设置v2,  open_setv2
-Menu, Tray, icon, 设置v2,% A_ScriptDir "\Icons\设置.ico"
+Menu, Tray, add, 设置[Need DX11],  open_setv2
+Menu, Tray, icon, 设置[Need DX11],% A_ScriptDir "\Icons\设置.ico"
 Menu, Tray, add,% "打开搜索框: " convert_key2str(g_config.key_open_search_box),  main_label
 Menu, Tray, icon,% "打开搜索框: " convert_key2str(g_config.key_open_search_box),% A_ScriptDir "\Icons\搜索.ico"
 Menu, Tray, add,% "添加命令: " convert_key2str(g_config.key_open_editor),  open_editor
@@ -1137,7 +1137,7 @@ open_set:
 return
 
 open_github:
-run,https://github.com/kazhafeizhale/super-command
+run,https://github.com/sxzxs/cherry-snippet
 run,https://zhangyue667.lanzouh.com/DirectXRepairEnhanced
 run,https://blog.csdn.net/vbcom/article/details/7245186
 return
@@ -1149,5 +1149,6 @@ convert_key2str(byref help_string)
     help_string := StrReplace(help_string, "!", "Alt ")
     help_string := StrReplace(help_string, "#", "Win ")
     help_string := StrReplace(help_string, "~$")
+    StringUpper, help_string, help_string
     return help_string
 }
