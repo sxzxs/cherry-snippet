@@ -788,9 +788,17 @@ handle_plug(command)
     log.info(command)
     pos := InStr(command, A_Space)
     log.info(pos)
-    plug := SubStr(command, 2 , pos - 2)
-    command := SubStr(command, pos)
-    command := Trim(command)
+    if(pos == 0)
+    {
+        plug := SubStr(command, 2)
+        command := ""
+    }
+    else
+    {
+        plug := SubStr(command, 2 , pos - 2)
+        command := SubStr(command, pos)
+        command := Trim(command)
+    }
     log.info(plug, command)
     path := A_ScriptDir "\plugin\" plug
     file_path := A_ScriptDir "\plugin\" plug "\" plug ".ahk"

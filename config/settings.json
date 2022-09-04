@@ -7,7 +7,7 @@
     "key_edit_new": "~$^d",
     "key_edit_now": "~$^e",
     "key_open_editor": "~$!c",
-    "key_open_search_box": "f3",
+    "key_open_search_box": "+enter",
     "key_send": "~$^enter",
     "python_path": "C:\\Python310\\python.exe",
     "tooltip_back_color": "0xE0CCB9",
@@ -25,7 +25,7 @@
     "win_search_box_font_size": "16",
     "win_search_box_text_color": "0x000000",
     "win_trans": "240",
-    "win_w": "800",
-    "win_x": 787,
-    "win_y": 57
+    "win_w": 700,
+    "win_x": 619,
+    "win_y": 143
 }
