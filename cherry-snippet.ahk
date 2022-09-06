@@ -899,7 +899,10 @@ db_parse(DB)
         g_map_cmds[v["path"]] := k
         str := v["path"]
         arr_cmds.Push(str)
-        str .= py.allspell_muti(str) py.initials_muti(str) 
+        if(g_config.is_use_xiaohe_double_pinyin == 1)
+            str .= py.allspell_muti(str) py.initials_muti(str) py.double_spell_muti(str)
+        else
+            str .= py.allspell_muti(str) py.initials_muti(str) 
         arr_cmds_pinyin.Push(str)
     }
     log.info(arr_cmds)
