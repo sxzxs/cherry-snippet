@@ -1062,12 +1062,11 @@ hook_mode_quck_search()
     {
         if(arr_cmds[v] != "")
         {
-            tmp := substr(arr_cmds[v], instr(arr_cmds[v], "]") + 1)
-            g_hook_array[real_index] := tmp
+            g_hook_array[real_index] := arr_cmds[v]
             if(real_index == 1)
-                g_hook_list_strings := real_index " " tmp
+                g_hook_list_strings := real_index " " arr_cmds[v]
             else
-                g_hook_list_strings .= "`r`n"  real_index " "  tmp
+                g_hook_list_strings .= "`r`n"  real_index " "  arr_cmds[v]
             real_index++
         }
     }
