@@ -121,7 +121,7 @@ if(g_config.tooltip_help)
 if !FileExist(g_config.cherry_tree_path)
 {
     run,https://www.giuspen.com/cherrytree/
-    FileSelectFile, SelectedFile, 3, , 选择cherrytree.exe文件, 执行文件 (*.exe)
+    FileSelectFile, SelectedFile, 3, , 选择cherrytree.exe文件, 执行文件 (cherrytree.exe)
     if (SelectedFile = "")
     {
         MsgBox, The user didn't select anything.
@@ -132,7 +132,6 @@ if !FileExist(g_config.cherry_tree_path)
 
 if !FileExist(g_config.db_path)
 {
-    msgbox,% g_config.db_path
     FileSelectFile, SelectedFile, 3, , 选择.ctb文件, ctb文件 (*.ctb)
     if (SelectedFile = "")
     {
