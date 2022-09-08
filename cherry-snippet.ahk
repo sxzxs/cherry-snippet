@@ -286,14 +286,12 @@ return
 return
 
 copy_command_to_editor:
-    if(!WinActive("ahk_id " MyGuiHwnd) || g_command == "")
-        return
-    pos := InStr(g_command, ">", CaseSensitive := false, StartingPos := 0, Occurrence := 1)
-    command := SubStr(g_command, 1, pos)
-    command := StrReplace(command, "$")
-    GuiControl,, Query ,% command
-    SendInput, {end}
-    gui,Submit, Nohide
+    pos := InStr(g_command, "]", CaseSensitive := false, StartingPos := 0, Occurrence := 1)
+    command := SubStr(g_command, 2, pos - 2)
+    Clipboard := command
+    SendInput, {RShift Down}{Insert}{RShift Up}
+    sleep,500
+    SendInput, {Enter}
 return
 edit_new:
     if(!WinActive("ahk_id " MyGuiHwnd))
@@ -376,8 +374,8 @@ return
 ~$^c::
     if(!WinActive("ahk_id " MyGuiHwnd) || g_command == "")
         return
-    Clipboard := g_curent_text
-    g_text_rendor_clip.RenderOnScreen("Saved text to clipboard.", "t:1250 c:#F9E486 y:75vh r:10%")
+    g_text_rendor_clip.RenderOnScreen("Saved id text to clipboard.", "t:1250 c:#F9E486 y:75vh r:10%")
+    gosub GuiEscape
     gosub copy_command_to_editor
 return
 
