@@ -289,6 +289,7 @@ copy_command_to_editor:
     pos := InStr(g_command, "]", CaseSensitive := false, StartingPos := 0, Occurrence := 1)
     command := SubStr(g_command, 2, pos - 2)
     Clipboard := command
+    SendInput, ^t
     SendInput, {RShift Down}{Insert}{RShift Up}
     sleep,500
     SendInput, {Enter}
