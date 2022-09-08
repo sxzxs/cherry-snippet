@@ -895,6 +895,7 @@ db_parse(DB)
     g_map_cmds := {}
     for k,v in id_path
     {
+        ;write2db(v["path"], k)
         g_map_cmds[v["path"]] := k
         str := v["path"]
         arr_cmds.Push(str)
@@ -904,6 +905,12 @@ db_parse(DB)
             str .= py.allspell_muti(str) py.initials_muti(str) 
         arr_cmds_pinyin.Push(str)
     }
+
+    sql := "update node set tags=node_id"
+    log.info(sql)
+    If !DB.Exec(sql)
+        MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
+
     log.info(arr_cmds)
     log.info(path_map)
 }
@@ -1163,4 +1170,14 @@ convert_key2str(byref help_string)
     help_string := StrReplace(help_string, "~$")
     StringUpper, help_string, help_string
     return help_string
+}
+
+write2db(data, id)
+{
+    ;SQL := "SELECT * FROM node WHERE node_id = 147;"
+    sql := "UPDATE node SET tags = '" data "' WHERE node_id = " id ";"
+    log.info(sql)
+    If !DB.Exec(sql)
+        MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
+    return
 }
