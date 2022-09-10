@@ -25,6 +25,7 @@ ListLines Off
 RunAsAdmin()
 
 #include <py>
+#include <wubi>
 #include <btt>
 #include <log>
 #include <TextRender>
@@ -114,6 +115,10 @@ global g_my_menu_map := { "编辑当前命令: " convert_key2str(g_config.key_ed
                             , "复制结果: " convert_key2str(g_config.key_open_search_box) : ["label_menu_copy_data", A_ScriptDir "\Icons\复制.ico"]
                             , "设置[Need DX11]" : ["open_setv2", A_ScriptDir "\Icons\设置.ico"]
                             , "设置" : ["open_set", A_ScriptDir "\Icons\设置.ico"]}
+
+global g_wubi := ""
+if(g_config.is_use_86wubi)
+    g_wubi := new wubi(A_ScriptDir "/config/wubi.bin")
 
 if(g_config.tooltip_help)
     g_text_rendor.RenderOnScreen(help_string, "t: 5seconds x:left y:top pt:2", "s:15 j:left ")
@@ -898,10 +903,12 @@ db_parse(DB)
         g_map_cmds[v["path"]] := k
         str := v["path"]
         arr_cmds.Push(str)
+
+        str .= py.allspell_muti(str) " " py.initials_muti(str) 
         if(g_config.is_use_xiaohe_double_pinyin == 1)
-            str .= py.allspell_muti(str) py.initials_muti(str) py.double_spell_muti(str)
-        else
-            str .= py.allspell_muti(str) py.initials_muti(str) 
+            str .= " " py.double_spell_muti(str)
+        if(g_config.is_use_86wubi == 1)
+            str .= " " g_wubi.code(str)
         arr_cmds_pinyin.Push(str)
     }
 
