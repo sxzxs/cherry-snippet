@@ -126,6 +126,7 @@ if(g_config.tooltip_help)
 if !FileExist(g_config.cherry_tree_path)
 {
     run,https://www.giuspen.com/cherrytree/
+    run,https://pan.baidu.com/s/1_tzJ8SFvCQJXvVo5YxUEMg?pwd=1w2b
     FileSelectFile, SelectedFile, 3, , 选择cherrytree.exe文件, 执行文件 (cherrytree.exe)
     if (SelectedFile = "")
     {
@@ -1162,6 +1163,7 @@ open_set:
 return
 
 open_github:
+run,https://pan.baidu.com/s/1_tzJ8SFvCQJXvVo5YxUEMg?pwd=1w2b
 run,https://github.com/sxzxs/cherry-snippet
 run,https://zhangyue667.lanzouh.com/DirectXRepairEnhanced
 run,https://blog.csdn.net/vbcom/article/details/7245186
