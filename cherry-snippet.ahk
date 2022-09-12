@@ -34,6 +34,7 @@ RunAsAdmin()
 #include <gdip_all>
 #include <shinsoverlayclass>
 #include <Class_SQLiteDB>
+#include <cjson>
 
 OnMessage(0x201, "WM_LBUTTONDOWN")
 OnMessage(0x004A, "Receive_WM_COPYDATA")  ; 0x004A 为 WM_COPYDATA
@@ -47,10 +48,17 @@ log.is_enter := true
 
 ;加载配置
 global g_json_path := A_ScriptDir . "/config/settings.json"
+global g_map_py_path := A_ScriptDir . "/config/py_map.bin"
+global g_map_py := {}
 global g_config := {}
 if(!loadconfig(g_config))
 {
     MsgBox,% "Load config"  g_json_path " failed! will exit!!"
+    ExitApp
+}
+if(!load_obj_config(g_map_py, g_map_py_path))
+{
+    MsgBox,% "Load config"  g_map_py_path " failed! will exit!!"
     ExitApp
 }
 
@@ -158,7 +166,9 @@ If !DB.OpenDB(db_file_path)
    ExitApp
 }
 
+log.info("db parse ")
 db_parse(DB)
+log.info("end")
 
 ;注册热键
 Hotkey,% g_config.key_open_search_box , main_label
@@ -863,28 +873,27 @@ db_parse(DB)
         map_father[v[1]] := v[2] 
     }
 
+    SQL := "SELECT * FROM node;"
+    If !DB.GetTable(SQL, obj_sql_node)
+        MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
+
+    obj_sql_node.map_node := {}
+    for k,v in obj_sql_node.rows
+    {
+        obj_sql_node.map_node[v[1]] := v 
+    }
+
     id_path := {}
     for k,v in map_father
     {
         id_path[k] := {}
         id_path[k]["father_id"] := []
-
-        SQL := "SELECT * FROM node WHERE node_id = " k ";"
-        If !DB.GetTable(SQL, Result)
-            MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
-        path_string := Result["rows"][1][2]
+        path_string := obj_sql_node["map_node"][k][2]
         loop
         {
             if(map_father.HasKey(v))
             {
-
-                SQL := "SELECT * FROM node WHERE node_id = " v ";"
-                If !DB.GetTable(SQL, Result)
-                    MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
-                log.info(Result["rows"][1][2])
-                
-                path_string := Result["rows"][1][2] "-" path_string
-                log.info(path_string)
+                path_string := obj_sql_node["map_node"][v][2] "-" path_string
                 id_path[k]["father_id"].Push(v)
             }
             else
@@ -897,41 +906,39 @@ db_parse(DB)
         }
     }
 
-    log.info(id_path)
     g_map_cmds := {}
     for k,v in id_path
     {
-        ;write2db(v["path"], k)
         g_map_cmds[v["path"]] := k
         str := v["path"]
         arr_cmds.Push(str)
 
-        log.info(str)
-        log.info(py.allspell_muti(str))
-        log.info(py.initials_muti(str))
-        py_all := py.allspell_muti(str)
-        py_init := py.initials_muti(str)
-
+        if(g_map_py.HasKey(str))
+        {
+            py_all := g_map_py[str][1]
+            py_init := g_map_py[str][2]
+        }
+        else
+        {
+            py_all := py.allspell_muti(str)
+            py_init := py.initials_muti(str)
+            g_map_py[str] := []
+            g_map_py[str][1] := py_all
+            g_map_py[str][2] := py_init
+        }
         str := py_all py_init
-        ;str .= py.allspell_muti(str) " " py.initials_muti(str) 
         if(g_config.is_use_xiaohe_double_pinyin == 1)
             str .= " " py.double_spell_muti(str)
         if(g_config.is_use_86wubi == 1)
             str .= " " g_wubi.code(str)
         
-        log.info(str)
-        log.info("push start")
         arr_cmds_pinyin.Push(str)
-        log.info("push end")
     }
 
     sql := "update node set tags=node_id"
-    log.info(sql)
     If !DB.Exec(sql)
         MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
-
-    log.info(arr_cmds)
-    log.info(path_map)
+    save_obj_config(g_map_py, g_map_py_path)
 }
 
 switchime(ime := "A")
@@ -995,6 +1002,21 @@ Send_WM_COPYDATA(ByRef StringToSend, ByRef TargetScriptTitle)  ; 在这种情况
     return ErrorLevel  ; 返回 SendMessage 的回复给我们的调用者.
 }
 
+load_obj_config(ByRef config, json_path)
+{
+    config := ""
+    FileRead, OutputVar,% json_path
+    config :=  JSON.Load(outputvar)
+    if(config == "")
+        return false
+    return true
+}
+save_obj_config(config, json_path)
+{
+    str := JSON.Dump(config)
+    FileDelete, % json_path
+    FileAppend,% str,% json_path,UTF-8
+}
 
 loadconfig(ByRef config)
 {
@@ -1030,7 +1052,6 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd)
         saveconfig(g_config)
     }
 }
-
 
 SacChar(ih, char)  ; 当一个字符被添加到 SacHook.Input 时调用.
 {
@@ -1201,3 +1222,6 @@ write2db(data, id)
         MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
     return
 }
+
+;SQL := "SELECT * FROM children;"
+;SQL := "SELECT * FROM node WHERE node_id = " v ";"
