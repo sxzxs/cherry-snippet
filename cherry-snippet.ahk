@@ -42,6 +42,7 @@ OnMessage(0x002C, "ODLB_MeasureItem") ; WM_MEASUREITEM
 OnMessage(0x002B, "ODLB_DrawItem") ; WM_DRAWITEM
 
 log.is_log_open := false
+log.is_out_file := false
 log.is_enter := true
 
 ;加载配置
@@ -905,12 +906,23 @@ db_parse(DB)
         str := v["path"]
         arr_cmds.Push(str)
 
-        str .= py.allspell_muti(str) " " py.initials_muti(str) 
+        log.info(str)
+        log.info(py.allspell_muti(str))
+        log.info(py.initials_muti(str))
+        py_all := py.allspell_muti(str)
+        py_init := py.initials_muti(str)
+
+        str := py_all py_init
+        ;str .= py.allspell_muti(str) " " py.initials_muti(str) 
         if(g_config.is_use_xiaohe_double_pinyin == 1)
             str .= " " py.double_spell_muti(str)
         if(g_config.is_use_86wubi == 1)
             str .= " " g_wubi.code(str)
+        
+        log.info(str)
+        log.info("push start")
         arr_cmds_pinyin.Push(str)
+        log.info("push end")
     }
 
     sql := "update node set tags=node_id"

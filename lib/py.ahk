@@ -36,11 +36,11 @@
         }
         out_str := ""
         VarSetCapacity(out_str,0)
-        VarSetCapacity(out_str,4000)
+        VarSetCapacity(out_str,99999)
 
         py_StrPutVar(in_str, buf, "CP0")
         rtn := DllCall(this.LOG4AHK_G_MY_DLL_USE_MAP["cpp2ahk.dll"]["chinese_convert_pinyin_allspell"],"Str", buf, "Str", out_str,"Cdecl Int")
-        rtn := StrGet(&out_str, 4000,"UTF-8")
+        rtn := StrGet(&out_str, 99999,"UTF-8")
         return rtn
     }
     double_spell_muti(in_str)
@@ -51,11 +51,11 @@
         }
         out_str := ""
         VarSetCapacity(out_str,0)
-        VarSetCapacity(out_str,4000)
+        VarSetCapacity(out_str,99999)
 
         py_StrPutVar(in_str, buf, "UTF-16")
         rtn := DllCall(this.LOG4AHK_G_MY_DLL_USE_MAP["cpp2ahk.dll"]["chinese_convert_double_pinyin_muti"],"Str", buf, "Str", out_str,"Cdecl Int")
-        rtn := StrGet(&out_str, 4000,"UTF-8")
+        rtn := StrGet(&out_str, 99999,"UTF-8")
         return rtn
     }
     allspell_muti(in_str)
@@ -66,11 +66,11 @@
         }
         out_str := ""
         VarSetCapacity(out_str,0)
-        VarSetCapacity(out_str,4000)
+        VarSetCapacity(out_str,99999)
 
         py_StrPutVar(in_str, buf, "UTF-16")
         rtn := DllCall(this.LOG4AHK_G_MY_DLL_USE_MAP["cpp2ahk.dll"]["chinese_convert_pinyin_allspell_muti"],"Str", buf, "Str", out_str,"Cdecl Int")
-        rtn := StrGet(&out_str, 4000,"UTF-8")
+        rtn := StrGet(&out_str, 99999,"UTF-8")
         return rtn
     }
     initials_muti(in_str)
@@ -81,11 +81,11 @@
         }
         out_str := ""
         VarSetCapacity(out_str,0)
-        VarSetCapacity(out_str,4000)
+        VarSetCapacity(out_str,99999)
 
         py_StrPutVar(in_str, buf, "UTF-16")
         rtn := DllCall(this.LOG4AHK_G_MY_DLL_USE_MAP["cpp2ahk.dll"]["chinese_convert_pinyin_initials_muti"],"Str", buf, "Str", out_str,"Cdecl Int")
-        rtn := StrGet(&out_str, 4000,"UTF-8")
+        rtn := StrGet(&out_str, 99999,"UTF-8")
         return rtn
     }
     initials(in_str)
@@ -96,11 +96,11 @@
         }
         out_str := ""
         VarSetCapacity(out_str,0)
-        VarSetCapacity(out_str,4000)
+        VarSetCapacity(out_str,99999)
 
         py_StrPutVar(in_str, buf, "CP0")
         rtn := DllCall(this.LOG4AHK_G_MY_DLL_USE_MAP["cpp2ahk.dll"]["chinese_convert_pinyin_initials"],"Str", buf, "Str", out_str,"Cdecl Int")
-        rtn := StrGet(&out_str, 4000,"UTF-8")
+        rtn := StrGet(&out_str, 99999,"UTF-8")
         return rtn
     }
 }
