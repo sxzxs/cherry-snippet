@@ -132,6 +132,8 @@ if(g_config.is_use_86wubi)
 if(g_config.tooltip_help)
     g_text_rendor.RenderOnScreen(help_string, "t: 5seconds x:left y:top pt:2", "s:15 j:left ")
 
+ToolTip, 启动中...,0, 0
+
 if !FileExist(g_config.cherry_tree_path)
 {
     run,https://www.giuspen.com/cherrytree/
@@ -242,7 +244,39 @@ SysGet, VirtualScreenHeight, 79
 SysGet, VirtualScreenX, 76
 SysGet, VirtualScreenY, 77
 
+;定时监控数据文件修改时间
+;目前数据文件锁定状态没法判断，TODO
+SetTimer, monitor_date_file, 250
+ToolTip
+return
+
+
 return  ; 脚本的自动运行段结束.
+
+monitor_date_file:
+;获取文件最后修改时间
+FileGetTime, date_last_change_time,% db_file_path
+SplitPath, db_file_path,, db_dir
+;比较时间
+if(date_last_change_time > g_config.last_parse_time)
+{
+    log.info(" - " db_dir " - CherryTree")
+    WinGet, id, List,,, Program Manager
+    Loop, %id%
+    {
+        this_id := id%A_Index%
+        WinGetTitle, this_title, ahk_id %this_id%
+        if(instr(this_title, " - " db_dir " - CherryTree"))
+        {
+            log.info(this_title)
+            if(instr(this_title, "*"))
+                log.info("not save")
+            else
+                Reload
+        }
+    }
+}
+return
 
 MenuHandler:
 if(!WinActive("ahk_id " MyGuiHwnd))
@@ -865,7 +899,7 @@ db_parse(DB)
 
     SQL := "SELECT * FROM children;"
     If !DB.GetTable(SQL, Result)
-        MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
+        MsgBox, 16, db_parse SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
 
     map_father := {}
     for k,v in result.rows
@@ -938,7 +972,11 @@ db_parse(DB)
     sql := "update node set tags=node_id"
     If !DB.Exec(sql)
         MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
+
     save_obj_config(g_map_py, g_map_py_path)
+    g_config.last_parse_time := A_now
+    saveconfig(g_config)
+    g_map_py := ""
 }
 
 switchime(ime := "A")
