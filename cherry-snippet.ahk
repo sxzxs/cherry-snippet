@@ -429,7 +429,7 @@ return
 ~$^c::
     if(!WinActive("ahk_id " MyGuiHwnd) || g_command == "")
         return
-    g_text_rendor_clip.RenderOnScreen("cherry tree 跳转", "t:1250 c:#F9E486 y:75vh r:10%")
+    g_text_rendor_clip.RenderOnScreen("cherry tree 跳转, 请先激活cherry tree 窗口", "t:2000 c:#F9E486 y:75vh r:10%")
     gosub GuiEscape
     KeyWait, Ctrl, T3  ; 等待用户实际释放.
     if(ErrorLevel == 1)
@@ -437,10 +437,12 @@ return
     KeyWait, c, T3  ; 等待用户实际释放.
     if(ErrorLevel == 1)
         return
-    run,% g_config.cherry_tree_path " " g_config.db_path
+    ;run,% g_config.cherry_tree_path " " g_config.db_path
     WinWaitActive, ahk_exe cherrytree.exe, , 2
     if(ErrorLevel == 1)
+    {
         return
+    }
     gosub copy_command_to_editor
 return
 
