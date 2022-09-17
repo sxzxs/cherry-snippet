@@ -340,6 +340,10 @@ copy_command_to_editor:
     pos := InStr(g_command, "]", CaseSensitive := false, StartingPos := 0, Occurrence := 1)
     command := SubStr(g_command, 2, pos - 2)
     Clipboard := command
+    WinWaitActive, ahk_exe cherrytree.exe, , 2
+    if(ErrorLevel == 1)
+        return
+    cherry_hwnd := WinExist("A")
     SendInput, ^t
     SendInput, {RShift Down}{Insert}{RShift Up}
     sleep,500
@@ -428,8 +432,15 @@ return
     g_text_rendor_clip.RenderOnScreen("cherry tree 跳转", "t:1250 c:#F9E486 y:75vh r:10%")
     gosub GuiEscape
     KeyWait, Ctrl, T3  ; 等待用户实际释放.
+    if(ErrorLevel == 1)
+        return
     KeyWait, c, T3  ; 等待用户实际释放.
+    if(ErrorLevel == 1)
+        return
+    run,% g_config.cherry_tree_path " " g_config.db_path
     WinWaitActive, ahk_exe cherrytree.exe, , 2
+    if(ErrorLevel == 1)
+        return
     gosub copy_command_to_editor
 return
 
