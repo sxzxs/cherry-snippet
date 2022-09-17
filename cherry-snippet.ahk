@@ -422,12 +422,14 @@ edit_now_sub:
     goto GuiEscape
 return
 
-
 ~$^c::
     if(!WinActive("ahk_id " MyGuiHwnd) || g_command == "")
         return
-    g_text_rendor_clip.RenderOnScreen("Saved id text to clipboard.", "t:1250 c:#F9E486 y:75vh r:10%")
+    g_text_rendor_clip.RenderOnScreen("cherry tree 跳转", "t:1250 c:#F9E486 y:75vh r:10%")
     gosub GuiEscape
+    KeyWait, Ctrl, T3  ; 等待用户实际释放.
+    KeyWait, c, T3  ; 等待用户实际释放.
+    WinWaitActive, ahk_exe cherrytree.exe, , 2
     gosub copy_command_to_editor
 return
 
