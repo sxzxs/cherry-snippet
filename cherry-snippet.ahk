@@ -342,11 +342,20 @@ copy_command_to_editor:
     Clipboard := command
     WinWaitActive, ahk_exe cherrytree.exe, , 2
     if(ErrorLevel == 1)
+    {
+        log.info("no")
         return
-    cherry_hwnd := WinExist("A")
+    }
+    sleep,250
     SendInput, ^t
+    WinWaitActive,在多个节点中搜索 , , 2
+    if(ErrorLevel == 1)
+    {
+        log.info("no")
+        return
+    }
     SendInput, {RShift Down}{Insert}{RShift Up}
-    sleep,500
+    sleep,250
     SendInput, {Enter}
 return
 edit_new:
@@ -429,7 +438,7 @@ return
 ~$^c::
     if(!WinActive("ahk_id " MyGuiHwnd) || g_command == "")
         return
-    g_text_rendor_clip.RenderOnScreen("cherry tree 跳转, 请先激活cherry tree 窗口", "t:2000 c:#F9E486 y:75vh r:10%")
+    ;g_text_rendor_clip.RenderOnScreen("cherry tree 跳转, 请先激活cherry tree 窗口", "t:2000 c:#F9E486 y:75vh r:10%")
     gosub GuiEscape
     KeyWait, Ctrl, T3  ; 等待用户实际释放.
     if(ErrorLevel == 1)
@@ -437,12 +446,14 @@ return
     KeyWait, c, T3  ; 等待用户实际释放.
     if(ErrorLevel == 1)
         return
-    ;run,% g_config.cherry_tree_path " " g_config.db_path
+    run,% g_config.cherry_tree_path " " g_config.db_path
     WinWaitActive, ahk_exe cherrytree.exe, , 2
     if(ErrorLevel == 1)
     {
+        log.info("no")
         return
     }
+
     gosub copy_command_to_editor
 return
 
