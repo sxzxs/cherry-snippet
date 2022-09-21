@@ -1209,17 +1209,34 @@ update_btt()
         have_show += 1
     }
     g_hook_command := g_hook_array[g_hook_real_index]
-    log.info(g_hook_command, A_CaretX, A_CaretY)
-    ps := GetCaretPos()
-    pre_h := (g_config.win_search_box_font_size + 11) * g_hook_array.Length() + 100
-    if(pre_h + ps.y > A_ScreenHeight)
-    {
-        ps.y := A_ScreenHeight - pre_h
-        ps.y := ps.y < 0 ? 0 : ps.y
-    }
+
     show_string := g_hook_strings "`n" tmp_str
     if(g_hook_strings == "")
         show_string := "⌨"  show_string
+
+    log.info(g_hook_command, A_CaretX, A_CaretY)
+
+
+    ps := GetCaretPos()
+    wh := Width_and_Height(show_string, "s:" g_config.win_search_box_font_size + 5)
+    log.info("wh :", wh)
+    pre_h := wh[2]
+
+    SysGet, MonitorCount, MonitorCount
+    Loop, %MonitorCount%
+    {
+        SysGet, Monitor, Monitor, %A_Index%
+        if(ps.y > MonitorTop && ps.y < MonitorBottom && ps.x > MonitorLeft && ps.x < MonitorRight)
+        {
+            if(pre_h + ps.y > (MonitorBottom))
+            {
+                ps.y := MonitorBottom - pre_h
+                ps.y := ps.y < MonitorTop ? MonitorTop : ps.y
+            }
+            break
+        }
+    }
+
     g_hook_rendor_list.RenderOnScreen(show_string
                                 , "x:" ps.x + 30 " y:" ps.y + 40 " color:" g_config.win_search_box_back_color
                                 ,"s:" g_config.win_search_box_font_size + 5 " j:left " "c:" g_config.win_search_box_text_color "  b:true")
@@ -1289,3 +1306,13 @@ write2db(data, id)
 
 ;SQL := "SELECT * FROM children;"
 ;SQL := "SELECT * FROM node WHERE node_id = " v ";"
+
+;wh := Width_and_Height("hello world!", "s:42")
+;MsgBox wh[1] ", " wh[2]
+
+Width_and_Height(text, s1:="", s2:="") {
+    static tr := TextRender()
+    tr.Draw(text, "x:0 y:0 c:None" . s1, s2) ; only supports string syntax, feel free to check for an object!
+    try return [tr.w, tr.h]
+    finally tr.Flush() ; Use this to clear the graphics 
+}
