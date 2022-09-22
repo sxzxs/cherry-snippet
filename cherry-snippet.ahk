@@ -51,6 +51,7 @@ global g_json_path := A_ScriptDir . "/config/settings.json"
 global g_map_py_path := A_ScriptDir . "/config/py_map.bin"
 global g_map_py := {}
 global g_config := {}
+global startuplnk := A_StartMenu . "\Programs\Startup\cherry-snippet.lnk"
 if(!loadconfig(g_config))
 {
     MsgBox,% "Load config"  g_json_path " failed! will exit!!"
@@ -182,6 +183,9 @@ Hotkey,% g_config.hook_open , hook_open_label
 
 Menu, Tray, Icon, %A_ScriptDir%\Icons\super-command.ico
 Menu, Tray, NoStandard
+Menu, Tray, Add, 开机启动,AutoStart
+if(FileExist(startuplnk))
+    Menu, Tray, Check, 开机启动
 Menu, Tray, add, 帮助,  open_github
 Menu, Tray, icon, 帮助,% A_ScriptDir "\Icons\帮助.ico"
 Menu, Tray, add, 设置,  open_set
@@ -276,6 +280,15 @@ if(date_last_change_time > g_config.last_parse_time)
         }
     }
 }
+return
+
+ ;开机启动
+AutoStart:
+if(FileExist(startuplnk))
+	FileDelete, % startuplnk
+else
+	FileCreateShortcut, % A_ScriptFullpath, % startuplnk
+Menu, Tray, ToggleCheck, 开机启动
 return
 
 MenuHandler:
