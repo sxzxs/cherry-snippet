@@ -1252,7 +1252,7 @@ update_btt()
 
     g_hook_rendor_list.RenderOnScreen(show_string
                                 , "x:" ps.x + 30 " y:" ps.y + 40 " color:" g_config.win_search_box_back_color
-                                ,"s:" g_config.win_search_box_font_size + 5 " j:left " "c:" g_config.win_search_box_text_color "  b:true")
+                                ,"s:" g_config.win_search_box_font_size + 5 " j:left " "c:" g_config.win_search_box_text_color "  b:true"  " m:(0px 0px)")
 
     log.err(g_hook_rendor_list.y, g_hook_rendor_list.y2, g_hook_rendor_list.h)
     log.err(g_hook_array.Length())
