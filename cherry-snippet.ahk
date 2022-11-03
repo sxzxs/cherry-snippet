@@ -999,7 +999,7 @@ db_parse(DB)
             g_map_py[str][1] := py_all
             g_map_py[str][2] := py_init
         }
-        str := py_all py_init
+        str .= py_all py_init
         if(g_config.is_use_xiaohe_double_pinyin == 1)
             str .= " " py.double_spell_muti(str)
         if(g_config.is_use_86wubi == 1)
