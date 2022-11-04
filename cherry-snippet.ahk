@@ -1,4 +1,4 @@
-﻿; 超级命令
+﻿; cherry-snippet 代码片段管理工具 
 ; Tested on AHK v1.1.33.02 Unicode 32/64-bit, Windows /10
 ; Script compiler directives
 ;@Ahk2Exe-SetMainIcon %A_ScriptDir%\Icons\super-command.ico
