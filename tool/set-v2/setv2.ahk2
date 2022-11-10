@@ -27,7 +27,7 @@ main()
     while(_ImGui_PeekMsg())
     {
         _ImGui_BeginFrame()
-        if(!_ImGui_Begin("设置", show_close := true, window_flags))
+        if(!_ImGui_Begin("设置", show_close := true, window_flags | ImGuiWindowFlags_AlwaysAutoResize))
             ExitApp
 
         window_draw_list := _ImGui_GetWindowDrawList()
@@ -170,6 +170,19 @@ main()
             saveconfig(g_config, g_config_path)
             tooltip("请重新启动auto-command", 0, 0)
         }
+        _ImGui_SameLine()
+        static color_get := 0
+        static b_pick_color := false
+        ;_ImGui_CheckBox("color pick", &b_pick_color)
+
+        _Imgui_toggle_button("toggle color pick", &b_pick_color)
+
+        if(b_pick_color)
+        {
+            _imgui_PushItemWidth(400)
+            _ImGui_ColorPicker("color_pick", &color_get)
+            _ImGui_PopItemWidth()
+        }
         _ImGui_PopStyleColor(1)
         ;====================================
         _ImGui_End()
@@ -183,14 +196,28 @@ main()
 
 set_style(style)
 {
-	style.WindowBorderSize := 0
-	style.WindowTitleAlign := [0.5, 0.5]
-	style.WindowMinSize := [500, 430]
-	style.FramePadding := [8, 6]
+    style.TabBorderSize := 1.0
+    style.FrameBorderSize := 1.0
 
-	style.Colors[ImGuiCol_TitleBg] := [255, 101, 53, 255]
-	style.Colors[ImGuiCol_TitleBgActive] := [255, 101, 53, 255]
-	style.Colors[ImGuiCol_TitleBgCollapsed] := [0, 0, 0, 130]
+    style.WindowRounding := 6
+    style.ChildRounding := 6
+    style.FrameRounding := 6
+    style.PopupRounding := 6
+    style.ScrollbarRounding := 6
+    style.ScrollbarRounding := 6
+    style.GrabRounding := 6
+    style.LogSliderDeadzone := 6
+    style.TabRounding := 6
+
+	style.Colors[ImGuiCol_TitleBg] := [14, 4, 1, 255]
+	style.Colors[ImGuiCol_TitleBgActive] := [17, 5, 1, 255]
+	style.Colors[ImGuiCol_TitleBgCollapsed] := [0, 0, 130, 0]
+
+
+    style.Colors[ImGuiCol_Tab] := [0, 0, 0, 255]
+    style.Colors[ImGuiCol_TabHovered] := [40, 213, 204, 255]
+    style.Colors[ImGuiCol_TabActive] := [19, 123, 49, 255]
+
 
 	style.Colors[ImGuiCol_Button] := [31, 30, 31, 255]
 	style.Colors[ImGuiCol_ButtonActive] := [41, 40, 41, 255]
@@ -207,7 +234,6 @@ set_style(style)
 	style.Colors[ImGuiCol_Header] := [0, 0, 0, 0]
 	style.Colors[ImGuiCol_HeaderActive] := [0, 0, 0, 0]
 	style.Colors[ImGuiCol_HeaderHovered] := [46, 46, 46, 255]
-
 }
 
 ;加载配置函数

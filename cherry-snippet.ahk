@@ -111,7 +111,7 @@ global g_map_cmds := {}
 global g_text_rendor := TextRender()
 global g_text_rendor_clip := TextRender()
 global g_hook_rendor := TextRender()
-global g_hook_rendor_list := TextRender()
+global g_hook_rendor_list := {}
 global g_hook_strings := ""
 global g_hook_array := []
 global g_hook_real_index := 1
@@ -127,6 +127,10 @@ global g_my_menu_map := { "编辑当前命令: " convert_key2str(g_config.key_ed
                             , "设置" : ["open_set", A_ScriptDir "\Icons\设置.ico"]}
 
 global g_wubi := ""
+global g_total_show_number := 30
+
+global TPosObj, pToken_, @TSF
+DrawHXGUI("", "init")
 if(g_config.is_use_86wubi)
     g_wubi := new wubi(A_ScriptDir "/config/wubi.bin")
 
@@ -646,11 +650,7 @@ GuiEscape:
     g_text_rendor := ""
     global g_text_rendor := TextRender()
 
-    g_hook_rendor_list.Clear("")
-    g_hook_rendor_list.FreeMemory()
-    g_hook_rendor_list.DestroyWindow()
-    g_hook_rendor_list := ""
-    global g_hook_rendor_list := TextRender()
+    global g_hook_rendor_list := {}
 
     g_hook_rendor.Clear("")
     g_hook_rendor.FreeMemory()
@@ -1162,12 +1162,10 @@ SacEnd()
     g_hook_rendor := ""
     g_hook_rendor := TextRender()
 
-    g_hook_rendor_list.clear()
-    g_hook_rendor_list.FreeMemory()
-    g_hook_rendor_list := ""
-    g_hook_rendor_list := TextRender()
+    g_hook_rendor_list := {}
 
     g_hook_mode := false
+    DrawHXGUI("a", "")
 	SacHook.stop()
 }
 
@@ -1195,20 +1193,22 @@ hook_mode_quck_search()
     }
     update_btt()
 }
+
+
 update_btt()
 {
-    g_hook_rendor_list.crear()
-    g_hook_rendor_list.FreeMemory()
-
     CoordMode, ToolTip, Screen
-    tmp_str := ""
-    total_show_number := 50
-    midle_show_number := 20
+    g_hook_command := g_hook_array[g_hook_real_index]
+    ps := GetCaretPos()
+
+    g_total_show_number := 20
+    midle_show_number := g_total_show_number / 2
     start_index := 1
     if(g_hook_real_index > midle_show_number)
         start_index := g_hook_real_index - midle_show_number
 
     have_show := 1
+    tmp_str := []
     Loop, parse, g_hook_list_strings, `n, `r  ; 在 `r 之前指定 `n, 这样可以同时支持对 Windows 和 Unix 文件的解析.
     {
         if(A_Index < start_index)
@@ -1216,54 +1216,16 @@ update_btt()
         s := A_LoopField
         if(A_Index == g_hook_real_index)
             s := "[✓]" A_LoopField
-        tmp_str .= s "`n"
-        if(have_show > 50)
+        tmp_str.Push(s)
+        if(have_show > g_total_show_number)
             break
         have_show += 1
     }
-    g_hook_command := g_hook_array[g_hook_real_index]
-
-    show_string := g_hook_strings "`n" tmp_str
-    if(g_hook_strings == "")
-        show_string := "⌨"  show_string
-
-    log.info(g_hook_command, A_CaretX, A_CaretY)
-
-
-    ps := GetCaretPos()
-    wh := Width_and_Height(show_string, "s:" g_config.win_search_box_font_size + 5)
-    log.info("wh :", wh)
-    pre_h := wh[2]
-
-    SysGet, MonitorCount, MonitorCount
-    Loop, %MonitorCount%
-    {
-        SysGet, Monitor, Monitor, %A_Index%
-        if(ps.y > MonitorTop && ps.y < MonitorBottom && ps.x > MonitorLeft && ps.x < MonitorRight)
-        {
-            if(pre_h + ps.y > (MonitorBottom))
-            {
-                ps.y := MonitorBottom - pre_h
-                ps.y := ps.y < MonitorTop ? MonitorTop : ps.y
-            }
-            break
-        }
-    }
-
-    g_hook_rendor_list.RenderOnScreen(show_string
-                                , "x:" ps.x + 30 " y:" ps.y + 40 " color:" g_config.win_search_box_back_color
-                                ,"s:" g_config.win_search_box_font_size + 5 " j:left " "c:" g_config.win_search_box_text_color "  b:true"  " m:(0px 0px)")
-
-    log.err(g_hook_rendor_list.y, g_hook_rendor_list.y2, g_hook_rendor_list.h)
-    log.err(g_hook_array.Length())
-    log.err(g_config.win_search_box_font_size + 5)
-    log.err((g_config.win_search_box_font_size + 11) * g_hook_array.Length() + 52)
+    DrawHXGUI(g_hook_strings == "" ? "⌨" : g_hook_strings, tmp_str, ps.x, ps.y, g_hook_real_index - start_index + 1, 1)
+    WinGetPos, X, Y, W, H, ahk_id %@TSF%
+    g_hook_rendor_list.x2 := X + w
+    g_hook_rendor_list.y := y
     preview_command(g_hook_command)
-    if(tmp_str == "")
-    {
-        g_hook_rendor.RenderOnScreen("")
-        g_hook_rendor.FreeMemory()
-    }
 }
 
 tab_choose(opt := "")
@@ -1328,4 +1290,139 @@ Width_and_Height(text, s1:="", s2:="") {
     tr.Draw(text, "x:0 y:0 c:None" . s1, s2) ; only supports string syntax, feel free to check for an object!
     try return [tr.w, tr.h]
     finally tr.Flush() ; Use this to clear the graphics 
+}
+Gdip_MeasureString2(pGraphics, sString, hFont, hFormat, ByRef RectF){
+	Ptr := A_PtrSize ? "UPtr" : "UInt", VarSetCapacity(RC, 16)
+	DllCall("gdiplus\GdipMeasureString", Ptr, pGraphics, Ptr, &sString, "int", -1, Ptr, hFont, Ptr, &RectF, Ptr, hFormat, Ptr, &RC, "uint*", Chars, "uint*", Lines)
+	return &RC ? [NumGet(RC, 0, "float"), NumGet(RC, 4, "float"), NumGet(RC, 8, "float"), NumGet(RC, 12, "float")] : 0
+}
+DrawHXGUI(codetext, Textobj, x:=0, y:=0, localpos:= 0, Textdirection:=0
+            , Font:="Microsoft YaHei UI", BackgroundColor := "444444"
+            , TextColor := "EEECE2", CodeColor := "C9E47E"
+            ,BorderColor := "444444", FocusBackColor := "CAE682"
+            , FocusColor := "070C0D", FontSize := 20, FontBold := 0, Showdwxgtip := 0, func_key := "/")
+{
+	Critical
+	global TPosObj, pToken_, @TSF
+	static init:=0, Hidefg:=0, DPI:=A_ScreenDPI/96, MonCount:=1, MonLeft, MonTop, MonRight, MonBottom, minw:=0
+		, MinLeft:=DllCall("GetSystemMetrics", "Int", 76), MinTop:=DllCall("GetSystemMetrics", "Int", 77)
+		, MaxRight:=DllCall("GetSystemMetrics", "Int", 78), MaxBottom:=DllCall("GetSystemMetrics", "Int", 79)
+		, xoffset, yoffset, hoffset  ; 左边、上边、编码词条间距离增量
+		, fontoffset
+	If !IsObject(Textobj){
+		If (Textobj="init"){
+			If !pToken_&&(!pToken_:=Gdip_Startup()){
+				MsgBox, 48, GDIPlus Error!, GDIPlus failed to start. Please ensure you have gdiplus on your system, 5
+				ExitApp
+			}
+			Gui, TSF: -Caption +E0x8080088 +AlwaysOnTop +LastFound +hwnd@TSF -DPIScale
+			Gui, TSF: Show, NA
+			SysGet, MonCount, MonitorCount
+			SysGet, Mon, Monitor
+		} Else If (Textobj="shutdown"){
+			If (pToken_)
+				pToken_:=Gdip_Shutdown(pToken_)
+			Gui, TSF:Destroy
+		} Else If (Textobj=""){
+			hbm := CreateDIBSection(1, 1), hdc := CreateCompatibleDC(), obm := SelectObject(hdc, hbm)
+			UpdateLayeredWindow(@TSF, hdc, 0, 0, 1, 1), SelectObject(hdc, obm), DeleteObject(hbm), DeleteDC(hdc)
+			init:=0, minw:=0
+		}
+		Return
+	} Else If (!init){
+		If !pToken_&&(!pToken_:=Gdip_Startup()){
+			MsgBox, 48, GDIPlus Error!, GDIPlus failed to start. Please ensure you have gdiplus on your system, 5
+			ExitApp
+		}
+		xoffset:=FontSize*0.45, yoffset:=FontSize/2.5, hoffset:=FontSize/3.2, init:=1, fontoffset:=FontSize/16
+		
+		; 识别扩展屏坐标范围
+		x:=(x<MinLeft?MinLeft:x>MaxRight?MaxRight:x), y:=(y<MinTop?MinTop:y>MaxBottom?MaxBottom:y)
+		If (MonCount>1){
+			If (MonInfo:=MDMF_GetInfo(MDMF_FromPoint(x,y)))
+				MonLeft:=MonInfo.Left, MonTop:=MonInfo.Top, MonRight:=MonInfo.Right, MonBottom:=MonInfo.Bottom
+			Else
+				SysGet, Mon, Monitor
+		}
+	} Else
+		x:=(x<MinLeft?MinLeft:x>MaxRight?MaxRight:x), y:=(y<MinTop?MinTop:y>MaxBottom?MaxBottom:y)
+	hFamily := Gdip_FontFamilyCreate(Font), hFont := Gdip_FontCreate(hFamily, FontSize*DPI, FontBold)
+	hFormat := Gdip_StringFormatCreate(0x4000), Gdip_SetStringFormatAlign(hFormat, 0x00000800), pBrush := []
+	For __,_value in ["Background","Code","Text","Focus","FocusBack"]
+		If (!pBrush[%_value%])
+			pBrush[%_value%] := Gdip_BrushCreateSolid("0x" (%_value% := SubStr("FF" %_value%Color, -7)))
+	pPen_Border := Gdip_CreatePen("0x" SubStr("FF" BorderColor, -7), 1)
+	
+	w:=MonRight-MonLeft, h:=MonBottom-MonTop
+	; 计算界面长宽像素
+	hdc := CreateCompatibleDC(), G := Gdip_GraphicsFromHDC(hdc)
+	CreateRectF(RC, 0, 0, w-30, h-30), TPosObj:=[]
+	If (!minw)
+		minw := Gdip_MeasureString2(G, "1.一一一一 a", hFont, hFormat, RC)[3]
+	CodePos := Gdip_MeasureString2(G, codetext "|", hFont, hFormat, RC), CodePos[1]:=xoffset
+	, CodePos[2]:=yoffset, mh:=CodePos[2]+CodePos[4], mw:=Max(CodePos[3], minw)
+	If (Textdirection=1||InStr(codetext, func_key)){
+		mh+=hoffset
+		Loop % Textobj.Length()
+			TPosObj[A_Index] := Gdip_MeasureString2(G, Textobj[A_Index], hFont, hFormat, RC), TPosObj[A_Index,2]:=mh
+			, mh += TPosObj[A_Index,4], mw:=Max(mw,TPosObj[A_Index,3]), TPosObj[A_Index,1]:=CodePos[1]
+		Loop % Textobj[0].Length()
+			TPosObj[0,A_Index] := Gdip_MeasureString2(G, Textobj[0,A_Index], hFont, hFormat, RC), TPosObj[0,A_Index,2]:=mh
+			, mh += TPosObj[0,A_Index,4], mw:=Max(mw,TPosObj[0,A_Index,3]), TPosObj[0,A_Index,1]:=CodePos[1]
+		Loop % Textobj.Length()
+			TPosObj[A_Index,3]:=mw
+		Loop % Textobj[0].Length()
+			TPosObj[0,A_Index,3]:=mw
+		mw+=2*xoffset, mh+=yoffset
+	} Else {
+		t:=xoffset, mh+=hoffset
+		TPosObj[1] := Gdip_MeasureString2(G, Textobj[1], hFont, hFormat, RC), TPosObj[1,2]:=mh, TPosObj[1,1]:=t, t+=TPosObj[1,3]+hoffset, maxh:=TPosObj[1, 4]
+		Loop % (Textobj.Length()-1){
+			TPosObj[A_Index+1]:=Gdip_MeasureString2(G, Textobj[A_Index+1], hFont, hFormat, RC), maxh:=Max(maxh, TPosObj[A_Index+1, 4])
+			If (t+TPosObj[A_Index+1,3]<=w-30)
+				TPosObj[A_Index+1,1]:=t, TPosObj[A_Index+1,2]:=TPosObj[A_Index,2], t+=TPosObj[A_Index+1,3]+hoffset
+			Else
+				mw:=Max(mw,t), TPosObj[A_Index+1,1]:=xoffset, mh+=TPosObj[A_Index,4], TPosObj[A_Index+1,2]:=mh, t:=xoffset+TPosObj[A_Index+1,3]+hoffset
+		}
+		mw:=Max(mw,t)
+		mh+=maxh
+		Loop % Textobj[0].Length()
+			TPosObj[0,A_Index] := Gdip_MeasureString2(G, Textobj[0,A_Index], hFont, hFormat, RC), TPosObj[0,A_Index,1]:=xoffset, TPosObj[0,A_Index,2]:=mh, mh += TPosObj[0,A_Index,4], mw:=Max(mw,TPosObj[0,A_Index,3])	
+		Loop % Textobj[0].Length()
+			TPosObj[0,A_Index,3]:=mw-xoffset
+		mw+=xoffset, mh+=yoffset
+	}
+	Gdip_DeleteGraphics(G), hbm := CreateDIBSection(mw, mh), obm := SelectObject(hdc, hbm)
+	G := Gdip_GraphicsFromHDC(hdc), Gdip_SetSmoothingMode(G, 2), Gdip_SetTextRenderingHint(G, 4+(FontSize<21))
+	; 背景色
+	Gdip_FillRoundedRectangle(G, pBrush[Background], 0, 0, mw-2, mh-2, 5)
+	; 编码
+	CreateRectF(RC, CodePos[1], CodePos[2], w-30, h-30), Gdip_DrawString(G, codetext, hFont, hFormat, pBrush[Code], RC)
+	Loop % Textobj.Length()
+		If (A_Index=localpos)
+			Gdip_FillRoundedRectangle(G, pBrush[FocusBack], TPosObj[A_Index,1], TPosObj[A_Index,2]-hoffset/3, TPosObj[A_Index,3], TPosObj[A_Index,4]+hoffset*2/3, 3)
+			, CreateRectF(RC, TPosObj[A_Index,1], TPosObj[A_Index,2]+fontoffset, w-30, h-30), Gdip_DrawString(G, Textobj[A_Index], hFont, hFormat, pBrush[Focus], RC)
+		Else
+			CreateRectF(RC, TPosObj[A_Index,1], TPosObj[A_Index,2]+fontoffset, w-30, h-30), Gdip_DrawString(G, Textobj[A_Index], hFont, hFormat, pBrush[Text], RC)
+	Loop % Textobj[0].Length()
+		CreateRectF(RC, TPosObj[0,A_Index,1], TPosObj[0,A_Index,2], w-30, h-30), Gdip_DrawString(G, Textobj[0,A_Index], hFont, hFormat, pBrush[Text], RC)
+
+	; 定位提示
+	If (Showdwxgtip){
+		If !pBrush["FFFF0000"]
+			pBrush["FFFF0000"] := Gdip_BrushCreateSolid("0xFFFF0000")	; 红色
+		CreateRectF(RC, TPosObj[1,1], TPosObj[1,2]+FontSize*0.70, w-30, h-30)
+		Gdip_DrawString(G, "   " SubStr("　ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ",1,StrLen(jichu_for_select_Array[1,2])), hFont, hFormat, pBrush["FFFF0000"], RC)
+	}
+	; 边框、分隔线
+	Gdip_DrawRoundedRectangle(G, pPen_Border, 0, 0, mw-2, mh-2, 5)
+	Gdip_DrawLine(G, pPen_Border, xoffset, CodePos[4]+CodePos[2], mw-xoffset, CodePos[4]+CodePos[2])
+	UpdateLayeredWindow(@TSF, hdc, tx:=Min(x, Max(MonLeft, MonRight-mw)), ty:=Min(y, Max(MonTop, MonBottom-mh)), mw, mh)
+	SelectObject(hdc, obm), DeleteObject(hbm), DeleteDC(hdc), Gdip_DeleteGraphics(G)
+
+	Gdip_DeleteStringFormat(hFormat), Gdip_DeleteFont(hFont), Gdip_DeleteFontFamily(hFamily)
+	For __,_value in pBrush
+		Gdip_DeleteBrush(_value)
+	Gdip_DeletePen(pPen_Border)
+	WinSet, AlwaysOnTop, On, ahk_id%@TSF%
 }
