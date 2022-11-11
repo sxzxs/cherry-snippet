@@ -127,7 +127,7 @@ global g_my_menu_map := { "编辑当前命令: " convert_key2str(g_config.key_ed
                             , "设置" : ["open_set", A_ScriptDir "\Icons\设置.ico"]}
 
 global g_wubi := ""
-global g_total_show_number := 30
+global g_total_show_number := g_config["win_hook_total_show_number"]
 
 global TPosObj, pToken_, @TSF
 DrawHXGUI("", "init")
@@ -1201,7 +1201,6 @@ update_btt()
     g_hook_command := g_hook_array[g_hook_real_index]
     ps := GetCaretPos()
 
-    g_total_show_number := 20
     midle_show_number := g_total_show_number / 2
     start_index := 1
     if(g_hook_real_index > midle_show_number)
@@ -1221,7 +1220,13 @@ update_btt()
             break
         have_show += 1
     }
-    DrawHXGUI(g_hook_strings == "" ? "⌨" : g_hook_strings, tmp_str, ps.x, ps.y, g_hook_real_index - start_index + 1, 1)
+    DrawHXGUI(g_hook_strings == "" ? "⌨" : g_hook_strings, tmp_str, ps.x, ps.y 
+                , g_hook_real_index - start_index + 1, 1
+                , Font:= g_config["win_hook_font"], BackgroundColor := g_config["win_hook_backgroundcolor"]
+                , TextColor := g_config["win_hook_textcolor"], CodeColor := g_config["win_hook_codecolor"]
+                , BorderColor := g_config["win_hook_bordercolor"], FocusBackColor := g_config["win_hook_focusbackcolor"]
+                , FocusColor := g_config["win_hook_focuscolor"], FontSize := g_config["win_hook_fontsize"]
+                , FontBold := g_config["win_hook_fontbold"])
     WinGetPos, X, Y, W, H, ahk_id %@TSF%
     g_hook_rendor_list.x2 := X + w
     g_hook_rendor_list.y := y
