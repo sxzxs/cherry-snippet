@@ -13,7 +13,7 @@
 
 3、选择 cherry tree 数据文件 .ctb路径
 
-4、默认shift+enter执行搜索
+4、默认shift+enter执行搜索， shift+space hook搜索
 
 ![image](https://user-images.githubusercontent.com/26515268/186187953-1f25065d-8d9f-4179-8dd6-6b988bf607f0.png)
 ![image](https://user-images.githubusercontent.com/26515268/201247039-8c600769-cb0b-49a3-ac2a-8bc6cc6ae643.png)
@@ -32,7 +32,8 @@
 * 编辑已有代码片段
 ![编辑已有命令](https://user-images.githubusercontent.com/26515268/182859320-72b8bfc7-755a-4d22-a876-18aa25c9edb5.gif)
 * 添加代码片段和命令
-![新增代码片段](https://user-images.githubusercontent.com/26515268/182859737-187a93c0-7891-48e0-b5d9-9913fb86aaf3.gif)
+![image](https://user-images.githubusercontent.com/26515268/201247491-95cfc917-942e-4638-8c77-0ee7b1de4940.png)
+
 
 # 默认按键使用说明
 * 打开搜索框 shift+enter 
