@@ -484,6 +484,8 @@ hook_open_label:
     g_hook_strings := ""
     g_hook_list_strings := ""
     g_hook_mode := true
+    g_hook_real_index := 1
+    g_hook_array := []
 
     global SacHook := InputHook("E", "{Esc}")
     SacHook.OnChar := Func("SacChar")
