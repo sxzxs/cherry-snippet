@@ -1204,22 +1204,18 @@ update_btt()
     midle_show_number := g_total_show_number / 2
     start_index := 1
     if(g_hook_real_index > midle_show_number)
-        start_index := g_hook_real_index - midle_show_number
+        start_index := ceil(g_hook_real_index - midle_show_number)
 
     have_show := 1
     tmp_str := []
-    Loop, parse, g_hook_list_strings, `n, `r  ; 在 `r 之前指定 `n, 这样可以同时支持对 Windows 和 Unix 文件的解析.
+    loop,% g_total_show_number
     {
-        if(A_Index < start_index)
-            Continue
-        s := A_LoopField
-        if(A_Index == g_hook_real_index)
-            s := "[✓]" A_LoopField
-        tmp_str.Push(s)
-        if(have_show > g_total_show_number)
+        if(start_index + A_index - 1 > g_hook_array.Length())
             break
-        have_show += 1
+        tmp_str.Push(substr(g_hook_array[start_index + A_index - 1], instr(g_hook_array[start_index + A_index - 1], "]") + 1))
     }
+    log.info(g_total_show_number, start_index)
+    log.info(tmp_str)
     DrawHXGUI(g_hook_strings == "" ? "⌨" : g_hook_strings, tmp_str, ps.x, ps.y 
                 , g_hook_real_index - start_index + 1, 1
                 , Font:= g_config["win_hook_font"], BackgroundColor := g_config["win_hook_backgroundcolor"]
