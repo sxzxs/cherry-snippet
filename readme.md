@@ -19,6 +19,9 @@
 ![image](https://user-images.githubusercontent.com/26515268/201247039-8c600769-cb0b-49a3-ac2a-8bc6cc6ae643.png)
 ![image](https://user-images.githubusercontent.com/26515268/184530626-e96a55f9-dfe5-49a0-a69a-964727a13a3d.png)
 ![jks](https://user-images.githubusercontent.com/26515268/181264528-0d49dc1e-5440-46be-a3de-525999e783f8.gif)
+
+* 设置界面
+![image](https://user-images.githubusercontent.com/26515268/201247792-07c9942d-3c17-4715-a5f1-45efe1e79bad.png)
 * 发送到窗口
 ![发送到窗口](https://user-images.githubusercontent.com/26515268/182857886-a8d0be3a-8b58-47b1-bb48-c937d8c4fa52.gif)
 * 复制到粘贴板
