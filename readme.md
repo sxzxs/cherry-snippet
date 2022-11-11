@@ -6,9 +6,13 @@
 * cherrytree下载路径：https://www.giuspen.com/cherrytree/
 
 使用说明：
+
 1、打开 cherry-snippet.exe
+
 2、选择 cherry tree.exe的路径
+
 3、选择 cherry tree 数据文件 .ctb路径
+
 4、默认shift+enter执行搜索
 
 ![image](https://user-images.githubusercontent.com/26515268/186187953-1f25065d-8d9f-4179-8dd6-6b988bf607f0.png)
@@ -43,7 +47,7 @@
 
 
 # 修改热键
-执行 set.exe 程序设置
+右键托盘图标或者命令界面
 
 # 其他支持的脚本语言执行
 * bat 脚本开头 ::bat
