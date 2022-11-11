@@ -1363,7 +1363,7 @@ DrawHXGUI(codetext, Textobj, x:=0, y:=0, localpos:= 0, Textdirection:=0
 	hdc := CreateCompatibleDC(), G := Gdip_GraphicsFromHDC(hdc)
 	CreateRectF(RC, 0, 0, w-30, h-30), TPosObj:=[]
 	If (!minw)
-		minw := Gdip_MeasureString2(G, "1.一一一一 a", hFont, hFormat, RC)[3]
+		minw := Gdip_MeasureString2(G, "⌨", hFont, hFormat, RC)[3]
 	CodePos := Gdip_MeasureString2(G, codetext "|", hFont, hFormat, RC), CodePos[1]:=xoffset
 	, CodePos[2]:=yoffset, mh:=CodePos[2]+CodePos[4], mw:=Max(CodePos[3], minw)
 	If (Textdirection=1||InStr(codetext, func_key)){
