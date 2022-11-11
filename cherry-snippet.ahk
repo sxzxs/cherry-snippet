@@ -1212,7 +1212,7 @@ update_btt()
     {
         if(start_index + A_index - 1 > g_hook_array.Length())
             break
-        tmp_str.Push(substr(g_hook_array[start_index + A_index - 1], instr(g_hook_array[start_index + A_index - 1], "]") + 1))
+        tmp_str.Push((start_index + A_index - 1) ". " substr(g_hook_array[start_index + A_index - 1], instr(g_hook_array[start_index + A_index - 1], "]") + 1))
     }
     log.info(g_total_show_number, start_index)
     log.info(tmp_str)
