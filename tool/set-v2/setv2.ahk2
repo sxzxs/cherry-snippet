@@ -8,10 +8,16 @@ loadconfig(&g_config, g_config_path)
 
 logger.is_log_open := false
 logger.info(g_config)
+gif_tim := 0
+gif_tim_shandian := 0
+g_is_shandian := false
 main()
 main()
 {
     static no_menu := false
+    global gif_tim
+    global g_is_shandian
+    global gif_tim_shandian
     hwnd := _ImGui_GUICreate("AHK ImGui", 1, 1, -100, -100, 0, 0x80)
     WinShow(hwnd)
     WinSetAlwaysOnTop( 1,hwnd)
@@ -24,6 +30,17 @@ main()
     _ImGui_EnableDocking(True)
     static window_flags := 0
     static back_img_id := _ImGui_ImageFromFile(A_ScriptDir "\..\..\Icons\龙.png")
+    _Imgui_imgui_stbi__load_gif(A_ScriptDir "\..\..\Icons\gg.gif", &out_srv_array := [], &length := 0, &out_gif_with := 0, &out_gif_height := 0, &out_gif_delay := 0)
+    _Imgui_imgui_stbi__load_gif(A_ScriptDir "\..\..\Icons\闪电五连鞭.gif", &out_srv_array_shandian := [], &length_shandian := 0, &out_gif_with_shandian := 0, &out_gif_height_shandian := 0, &out_gif_delay_shandian := 0)
+    if(out_gif_delay == 0) 
+        out_gif_delay := 200
+    if(out_gif_delay_shandian == 0) 
+        out_gif_delay_shandian := 200
+    gif_tim := Gif_timmer(length, out_gif_delay)
+    gif_tim.Start()
+
+    gif_tim_shandian := Gif_timmer(length_shandian, out_gif_delay_shandian)
+    OnExit(exit_handle)
     while(_ImGui_PeekMsg())
     {
         _ImGui_BeginFrame()
@@ -31,11 +48,24 @@ main()
             ExitApp
 
         window_draw_list := _ImGui_GetWindowDrawList()
+        window_foreground_draw_list := _ImGui_GetForegroundDrawList()
 
-        _ImDraw_SetDrawList(window_draw_list)
         p := _ImGui_GetWindowPos()
         s := _ImGui_GetWindowSize()
-        _ImDraw_AddImage(back_img_id, p[1], p[2], p[1] + s[1], p[2] + s[2])
+        mx := p[1] + s[1] / 2
+        my := p[2] + s[2] / 2
+        short := s[1] > s[2] ? s[2] : s[1]
+        ;_ImDraw_AddImage(back_img_id, p[1], p[2], p[1] + s[1], p[2] + s[2])
+        if(!g_is_shandian)
+        {
+            _ImDraw_SetDrawList(window_draw_list)
+            _ImDraw_AddImage(out_srv_array[gif_tim.count], mx - short / 2, my - short / 2, mx + short / 2, my + short / 2)
+        }
+        else
+        {
+            _ImDraw_SetDrawList(window_foreground_draw_list)
+            _ImDraw_AddImage(out_srv_array_shandian[gif_tim_shandian.count], mx - short / 2, my - short / 2, mx + short / 2, my + short / 2)
+        }
 
         ;添加代码 =====================================
 
@@ -232,6 +262,9 @@ main()
 
 
             saveconfig(g_config, g_config_path)
+            g_is_shandian := true
+            SetTimer(()=> g_is_shandian := false, -2000)
+            gif_tim_shandian.Start()
             tooltip("请重新启动auto-command", 0, 0)
         }
         _ImGui_SameLine()
@@ -312,4 +345,40 @@ saveconfig(config, json_path)
     str := JSON.stringify(config)
     FileDelete(json_path)
     FileAppend(str, json_path, 'UTF-8')
+}
+
+
+exit_handle(ExitReason, ExitCode)
+{
+    gif_tim.Stop()
+    gif_tim_shandian.stop()
+}
+; 一个记录秒数的示例类...
+class Gif_timmer 
+{
+    __New(length, interval) 
+    {
+        this.interval := interval
+        this.count := 1
+        this.length := length
+        ; Tick() 有一个隐式参数 "this", 其引用一个对象
+        ; 所以, 我们需要创建一个封装了 "this " 和调用方法的函数:
+        this.timer := ObjBindMethod(this, "Tick")
+    }
+    Start() 
+    {
+        SetTimer this.timer, this.interval
+    }
+    Stop() 
+    {
+        ; 要关闭计时器, 我们必须传递和之前一样的对象:
+        SetTimer this.timer, 0
+    }
+    ; 本例中, 计时器调用了以下方法:
+    Tick() 
+    {
+        this.count++
+        if(this.count == this.length)
+            this.count := 1
+    }
 }
