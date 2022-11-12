@@ -1083,7 +1083,7 @@ _ImGui_Image(user_texture_id, size_x, size_y, uv0_x := 0, uv0_y := 0, uv1_x := 1
 _ImGui_ImageButton(user_texture_id, size_x, size_y, uv0_x := 0, uv0_y := 0, uv1_x := 1, uv1_y := 1, frame_padding := -1, bg_col := 0, tint_col := 0xFFFFFFFF)
 {
 	result := DllCall("imgui\ImageButton", "int", user_texture_id, "float", size_x, "float", size_y, "float", uv0_x, "float", uv0_y, "float", uv1_x, "float", uv1_y, "int", frame_padding, "uint", bg_col, "uint", tint_col)
-    return result
+    return result == 1 ? true : false
 }
 _ImGui_CheckBox(text, &active)
 {
