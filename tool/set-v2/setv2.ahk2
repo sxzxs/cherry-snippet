@@ -151,7 +151,10 @@ main()
             if(_ImGui_BeginTabItem("HOOK模式窗口"))
             {
                 _ImGui_InputText("文本字体##win_hook_font", &win_hook_font)
-                _ImGui_InputText("背景颜色##win_hook_backgroundcolor", &win_hook_backgroundcolor)
+                ;_ImGui_InputText("背景颜色##win_hook_backgroundcolor", &win_hook_backgroundcolor)
+                _ImGui_PushItemWidth(400)
+                _ImGui_ColorEdit("背景颜色##win_hook_backgroundcolor", &win_hook_backgroundcolor, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None)
+
                 ;_ImGui_InputText("文本颜色##win_hook_textcolor", &win_hook_textcolor)
                 _ImGui_PushItemWidth(400)
                 _ImGui_ColorEdit("文本颜色##win_hook_textcolor", &win_hook_textcolor, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None)
