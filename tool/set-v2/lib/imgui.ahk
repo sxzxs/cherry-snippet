@@ -3198,3 +3198,11 @@ class Imgui_io
 1>  	| <alignment member> (size=2)
 1>14328	| ?$ImVector@G InputQueueCharacters
 */
+
+_Imgui_bgr2rgb(x)
+{
+    g := x & 0xFF00
+    r := (x & 0xff) << 16
+    b := (x & 0xff0000) >> 16
+    return (r | g | b) & 0xffffff
+}

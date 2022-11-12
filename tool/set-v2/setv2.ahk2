@@ -77,12 +77,18 @@ main()
         static win_trans := g_config["win_trans"]
         ;hook_window
         static win_hook_font := g_config["win_hook_font"]
-        static win_hook_backgroundcolor := g_config["win_hook_backgroundcolor"]
-        static win_hook_textcolor := g_config["win_hook_textcolor"]
-        static win_hook_codecolor := g_config["win_hook_codecolor"]
-        static win_hook_bordercolor := g_config["win_hook_bordercolor"] 
-        static win_hook_focusbackcolor := g_config["win_hook_focusbackcolor"] 
-        static win_hook_focuscolor := g_config["win_hook_focuscolor"] 
+        ;static win_hook_backgroundcolor := g_config["win_hook_backgroundcolor"]
+        static win_hook_backgroundcolor := _Imgui_bgr2rgb(Integer("0x" g_config["win_hook_backgroundcolor"]))
+        ;static win_hook_textcolor := g_config["win_hook_textcolor"]
+        static win_hook_textcolor := _Imgui_bgr2rgb(Integer("0x" g_config["win_hook_textcolor"]))
+        ;static win_hook_codecolor := g_config["win_hook_codecolor"]
+        static win_hook_codecolor := _Imgui_bgr2rgb(Integer("0x" g_config["win_hook_codecolor"]))
+        ;static win_hook_bordercolor := g_config["win_hook_bordercolor"] 
+        static win_hook_bordercolor := _Imgui_bgr2rgb(Integer("0x" g_config["win_hook_bordercolor"]))
+        ;static win_hook_focusbackcolor := g_config["win_hook_focusbackcolor"] 
+        static win_hook_focusbackcolor := _Imgui_bgr2rgb(Integer("0x" g_config["win_hook_focusbackcolor"]))
+        ;static win_hook_focuscolor := g_config["win_hook_focuscolor"] 
+        static win_hook_focuscolor := _Imgui_bgr2rgb(Integer("0x" g_config["win_hook_focuscolor"]))
         static win_hook_fontsize := g_config["win_hook_fontsize"] 
         static win_hook_fontbold := g_config["win_hook_fontbold"]  
         static win_hook_total_show_number := g_config["win_hook_total_show_number"]  
@@ -146,11 +152,26 @@ main()
             {
                 _ImGui_InputText("文本字体##win_hook_font", &win_hook_font)
                 _ImGui_InputText("背景颜色##win_hook_backgroundcolor", &win_hook_backgroundcolor)
-                _ImGui_InputText("文本颜色##win_hook_textcolor", &win_hook_textcolor)
-                _ImGui_InputText("编码颜色##win_hook_codecolor", &win_hook_codecolor)
-                _ImGui_InputText("边框颜色##win_hook_bordercolor", &win_hook_bordercolor)
-                _ImGui_InputText("焦点背景##win_hook_focusbackcolor", &win_hook_focusbackcolor)
-                _ImGui_InputText("焦点文本##win_hook_focuscolor", &win_hook_focuscolor)
+                ;_ImGui_InputText("文本颜色##win_hook_textcolor", &win_hook_textcolor)
+                _ImGui_PushItemWidth(400)
+                _ImGui_ColorEdit("文本颜色##win_hook_textcolor", &win_hook_textcolor, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None)
+
+                ;_ImGui_InputText("编码颜色##win_hook_codecolor", &win_hook_codecolor)
+                _ImGui_PushItemWidth(400)
+                _ImGui_ColorEdit("编码颜色##win_hook_codecolor", &win_hook_codecolor, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None)
+
+                ;_ImGui_InputText("边框颜色##win_hook_bordercolor", &win_hook_bordercolor)
+                _ImGui_PushItemWidth(400)
+                _ImGui_ColorEdit("边框颜色##win_hook_bordercolor", &win_hook_bordercolor, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None)
+
+                ;_ImGui_InputText("焦点背景##win_hook_focusbackcolor", &win_hook_focusbackcolor)
+                _ImGui_PushItemWidth(400)
+                _ImGui_ColorEdit("焦点背景##win_hook_focusbackcolor", &win_hook_focusbackcolor, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None)
+
+                ;_ImGui_InputText("焦点文本##win_hook_focuscolor", &win_hook_focuscolor)
+                _ImGui_PushItemWidth(400)
+                _ImGui_ColorEdit("焦点文本##win_hook_focuscolor", &win_hook_focuscolor, ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None)
+
                 _ImGui_InputText("字体大小##win_hook_fontsize", &win_hook_fontsize)
                 _ImGui_InputText("粗体[0/1]##win_hook_fontbold", &win_hook_fontbold)
                 _ImGui_InputText("候选数目##win_hook_total_show_number", &win_hook_total_show_number)
@@ -196,12 +217,12 @@ main()
             ;hook window
 
             g_config["win_hook_font"] := win_hook_font
-            g_config["win_hook_backgroundcolor"] := win_hook_backgroundcolor
-            g_config["win_hook_textcolor"] := win_hook_textcolor
-            g_config["win_hook_codecolor"] := win_hook_codecolor
-            g_config["win_hook_bordercolor"] := win_hook_bordercolor
-            g_config["win_hook_focusbackcolor"] := win_hook_focusbackcolor
-            g_config["win_hook_focuscolor"] := win_hook_focuscolor
+            g_config["win_hook_backgroundcolor"] := Format("{:06X}", _Imgui_bgr2rgb(win_hook_backgroundcolor & 0xffffff))
+            g_config["win_hook_textcolor"] := Format("{:06X}", _Imgui_bgr2rgb(win_hook_textcolor & 0xffffff))
+            g_config["win_hook_codecolor"] := Format("{:06X}", _Imgui_bgr2rgb(win_hook_codecolor & 0xffffff))
+            g_config["win_hook_bordercolor"] := Format("{:06X}", _Imgui_bgr2rgb(win_hook_bordercolor & 0xffffff))
+            g_config["win_hook_focusbackcolor"] := Format("{:06X}", _Imgui_bgr2rgb(win_hook_focusbackcolor & 0xffffff))
+            g_config["win_hook_focuscolor"] := Format("{:06X}", _Imgui_bgr2rgb(win_hook_focuscolor & 0xffffff))
             g_config["win_hook_fontsize"] := win_hook_fontsize
             g_config["win_hook_fontbold"] := win_hook_fontbold
             g_config["win_hook_total_show_number"] := win_hook_total_show_number
