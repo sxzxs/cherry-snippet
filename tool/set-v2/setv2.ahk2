@@ -21,6 +21,7 @@ main()
     hwnd := _ImGui_GUICreate("AHK ImGui", 1, 1, -100, -100, 0, 0x80)
     WinShow(hwnd)
     WinSetAlwaysOnTop( 1,hwnd)
+    WinHide(hwnd)
 
     style := _ImGui_GetStyle()
     set_style(style)
@@ -262,7 +263,7 @@ main()
 
 
             saveconfig(g_config, g_config_path)
-            g_is_shandian := true
+            g_is_shandian := false
             SetTimer(()=> g_is_shandian := false, -2000)
             gif_tim_shandian.Start()
             tooltip("请重新启动auto-command", 0, 0)
