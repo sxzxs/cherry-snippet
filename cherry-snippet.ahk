@@ -986,27 +986,44 @@ db_parse(DB)
     {
         g_map_cmds[v["path"]] := k
         str := v["path"]
+        str_key := str
         arr_cmds.Push(str)
-
-        if(g_map_py.HasKey(str))
+        if(g_map_py.HasKey(str_key))
         {
-            py_all := g_map_py[str][1]
-            py_init := g_map_py[str][2]
+            py_all := g_map_py[str_key][1]
+            py_init := g_map_py[str_key][2]
         }
         else
         {
-            py_all := py.allspell_muti(str)
-            py_init := py.initials_muti(str)
-            g_map_py[str] := []
-            g_map_py[str][1] := py_all
-            g_map_py[str][2] := py_init
+            py_all := py.allspell_muti(str_key)
+            py_init := py.initials_muti(str_key)
+            g_map_py[str_key] := []
+            g_map_py[str_key][1] := py_all
+            g_map_py[str_key][2] := py_init
         }
         str .= py_all py_init
         if(g_config.is_use_xiaohe_double_pinyin == 1)
-            str .= " " py.double_spell_muti(str)
+        {
+            if(g_map_py.HasKey(str_key) && g_map_py[str_key].HasKey(3))
+                py_double := g_map_py[str_key][3]
+            else
+            {
+                py_double := py.double_spell_muti(str_key)
+                g_map_py[str_key][3] := py_double
+            }
+            str .= " " py_double
+        }
         if(g_config.is_use_86wubi == 1)
-            str .= " " g_wubi.code(str)
-        
+        {
+            if(g_map_py.HasKey(str_key) && g_map_py[str_key].HasKey(4))
+                str_wubi := g_map_py[str_key][4]
+            else
+            {
+                str_wubi := g_wubi.code(str)
+                g_map_py[str_key][4] := str_wubi
+            }
+            str .= " " str_wubi
+        }
         arr_cmds_pinyin.Push(str)
     }
 
