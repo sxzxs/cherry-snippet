@@ -1058,7 +1058,7 @@ execute_python(script)
     global g_curent_text,g_config
     FileDelete,% A_ScriptDir "\cmd\tmp\tmp.py"
     FileAppend,% script,% A_ScriptDir "\cmd\tmp\tmp.py",UTF-8
-    Run,% ComSpec " /k "  g_config.python_path " " A_ScriptDir "\cmd\tmp\tmp.py"
+    Run,% ComSpec " /k "  g_config.python_path " """ A_ScriptDir "\cmd\tmp\tmp.py"""
 }
 
 
