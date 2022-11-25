@@ -4,6 +4,9 @@
 * 检索支持拼音首字母、全拼等
 
 * cherrytree下载路径：https://www.giuspen.com/cherrytree/
+* 定制版本可以快速跳转
+链接：https://pan.baidu.com/s/1I7ZLOpt0M6peIlfUKBdvHw?pwd=1986 
+提取码：1986 
 
 使用说明：
 

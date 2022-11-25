@@ -35,6 +35,8 @@ RunAsAdmin()
 #include <shinsoverlayclass>
 #include <Class_SQLiteDB>
 #include <cjson>
+#Include <ZeroMQ>
+
 
 OnMessage(0x201, "WM_LBUTTONDOWN")
 OnMessage(0x004A, "Receive_WM_COPYDATA")  ; 0x004A 为 WM_COPYDATA
@@ -43,7 +45,7 @@ OnMessage(0x002C, "ODLB_MeasureItem") ; WM_MEASUREITEM
 OnMessage(0x002B, "ODLB_DrawItem") ; WM_DRAWITEM
 
 log.is_log_open := false
-log.is_out_file := false
+log.is_out_file := true
 log.is_enter := true
 
 ;加载配置
@@ -62,6 +64,10 @@ if(!load_obj_config(g_map_py, g_map_py_path))
     MsgBox,% "Load config"  g_map_py_path " failed! will exit!!"
     ExitApp
 }
+
+
+
+
 
 ;https://www.autohotkey.com/boards/viewtopic.php?t=3938
 OD_LB  := "+0x0050" ; LBS_OWNERDRAWFIXED = 0x0010, LBS_HASSTRINGS = 0x0040
@@ -256,8 +262,17 @@ SysGet, VirtualScreenY, 77
 ;目前数据文件锁定状态没法判断，TODO
 SetTimer, monitor_date_file, 250
 ToolTip
-return
 
+
+log.info("start")
+zmq := new ZeroMQ
+context := zmq.context()
+; Socket to send messages to
+sender := context.socket(zmq.PUSH)
+sender.connect("tcp://localhost:5557")
+; Process tasks forever
+
+;sender.zmq_send_string("hello world")
 
 return  ; 脚本的自动运行段结束.
 
@@ -455,8 +470,23 @@ return
 ~$^c::
     if(!WinActive("ahk_id " MyGuiHwnd) || g_command == "")
         return
-    ;g_text_rendor_clip.RenderOnScreen("cherry tree 跳转, 请先激活cherry tree 窗口", "t:2000 c:#F9E486 y:75vh r:10%")
     gosub GuiEscape
+
+    run,% g_config.cherry_tree_path " " g_config.db_path
+    WinWaitActive, ahk_exe cherrytree.exe, , 2
+    if(ErrorLevel == 1)
+    {
+        log.info("no")
+        return
+    }
+
+    pos := InStr(g_command, "]", CaseSensitive := false, StartingPos := 0, Occurrence := 1)
+    command := SubStr(g_command, 2, pos - 2)
+    log.info(command)
+    if(command != "")
+        sender.zmq_send_string(command, zmq.ZMQ_DONTWAIT)
+return
+    ;g_text_rendor_clip.RenderOnScreen("cherry tree 跳转, 请先激活cherry tree 窗口", "t:2000 c:#F9E486 y:75vh r:10%")
     KeyWait, Ctrl, T3  ; 等待用户实际释放.
     if(ErrorLevel == 1)
         return
