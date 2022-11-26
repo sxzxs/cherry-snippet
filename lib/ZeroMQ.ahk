@@ -4,24 +4,23 @@
     ; 可实际测试下来，这两步操作几乎没有提速
     __New(dll_path := "")
     {
-        if (dll_path = "")
+        local
+        SplitPath,A_LineFile,,dir
+        path := ""
+        lib_path := dir
+        if(A_IsCompiled)
         {
-            ; 在 Dll 子目录下查找 libzmqxxxxxxxx.dll 文件
-            dll_folder := A_LineFile "\..\Dll"
-            
-            loop Files, %dll_folder%\*.dll
-                if (A_LoopFileName ~= "^libzmq")
-                {
-                    dll_path := A_LoopFileLongPath
-                    break
-                }
+            path := A_PtrSize == 4 ? A_ScriptDir . "\lib\dll_32\" : A_ScriptDir . "\lib\dll_64\"
+            lib_path := A_ScriptDir . "\lib"
         }
         else
-            SplitPath dll_path, , dll_folder
-        
-        ; 将 libzmqxxxxxxxx.dll 载入内存
-        DllCall("SetDllDirectory", "Str", dll_folder)
-        if (!this.hModule_libzmq := DllCall("LoadLibrary", "Str", dll_path, "Ptr"))
+        {
+            path := (A_PtrSize == 4) ? dir . "\dll_32\" : dir . "\dll_64\"
+        }
+
+        dllcall("SetDllDirectory", "Str", path)
+        zmqdll := "libzmq-v141-mt-4_3_4.dll"
+        if (!this.hModule_libzmq := DllCall("LoadLibrary", "Str", zmqdll, "Ptr"))
             throw Exception("libzmq.dll loading failed.", -1)
         
         ; api 的内容来自于此 http://api.zeromq.org/
