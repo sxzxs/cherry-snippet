@@ -269,7 +269,7 @@ zmq := new ZeroMQ
 context := zmq.context()
 ; Socket to send messages to
 sender := context.socket(zmq.PUSH)
-sender.connect("tcp://localhost:5557")
+sender.connect("tcp://localhost:19935")
 ; Process tasks forever
 
 ;sender.zmq_send_string("hello world")
