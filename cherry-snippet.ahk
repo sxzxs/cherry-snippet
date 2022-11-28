@@ -846,6 +846,7 @@ preview_command(command)
 
     g_command := command
     g_curent_text := UnityPath
+    UnityPath := command "`n" UnityPath
     GuiControlGet, out, Pos, Query
     if(!WinExist("超级命令添加工具") && UnityPath != "")
     {
