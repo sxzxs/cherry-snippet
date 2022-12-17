@@ -94,7 +94,7 @@ v2.0
 hook模式参看帮助说明
 )
 convert_key2str(help_string)
-py.allspell_muti("ahk")
+py.allspell_muti_ptr("ahk")
 begin := 1
 total_command := 0 ;总命令个数
 is_get_all_cmd := false
@@ -1026,8 +1026,8 @@ db_parse(DB)
         }
         else
         {
-            py_all := py.allspell_muti(str_key)
-            py_init := py.initials_muti(str_key)
+            py_all := py.allspell_muti_ptr(str_key)
+            py_init := py.initials_muti_ptr(str_key)
             g_map_py[str_key] := []
             g_map_py[str_key][1] := py_all
             g_map_py[str_key][2] := py_init
@@ -1039,7 +1039,7 @@ db_parse(DB)
                 py_double := g_map_py[str_key][3]
             else
             {
-                py_double := py.double_spell_muti(str_key)
+                py_double := py.double_spell_muti_ptr(str_key)
                 g_map_py[str_key][3] := py_double
             }
             str .= " " py_double

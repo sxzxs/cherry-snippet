@@ -50,6 +50,7 @@ main()
         _ImGui_BeginFrame()
         if(!_ImGui_Begin("设置", show_close := true, window_flags | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
             ExitApp
+        ;if(!_ImGui_Begin("设置", show_close := true, window_flags | ImGuiWindowFlags_NoCollapse))
 
         _ImGui_Columns(2)
         _ImGui_SetColumnOffset(1, 100)
@@ -218,7 +219,25 @@ main()
                     _ImGui_Text("86五笔")
                     _ImGui_InputText("python解释器路径##python_path", &python_path)
                     _ImGui_InputText("cherry tree路径##cherry_tree_path", &cherry_tree_path)
+            		_ImGui_PushStyleColor(ImGuiCol_Button, "0xff18A927")
+					if(_ImGui_Button("选择cherrytree.exe文件路径##cherrytree文件路径"))
+					{
+						SelectedFile := FileSelect(3, , "Open a file", "Text Documents (*.exe)")
+						if(SelectedFile != "")
+						{
+							cherry_tree_path := SelectedFile
+						}
+					}
                     _ImGui_InputText(".ctb数据文件路径##db_path", &db_path)
+					if(_ImGui_Button("选择ctb文件路径##ctb文件路径"))
+					{
+						SelectedFile := FileSelect(3, , "Open a file", "Text Documents (*.ctb)")
+						if(SelectedFile != "")
+						{
+							db_path := SelectedFile
+						}
+					}
+					_ImGui_PopStyleColor()
                     _ImGui_InputText("win_trans##win_trans", &win_trans)
 
                     _ImGui_EndTabItem()
