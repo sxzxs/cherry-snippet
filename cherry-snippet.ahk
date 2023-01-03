@@ -472,7 +472,7 @@ return
         return
     gosub GuiEscape
 
-    run,% g_config.cherry_tree_path " " g_config.db_path
+    run,% "*RunAs " g_config.cherry_tree_path " " g_config.db_path
     WinWaitActive, ahk_exe cherrytree.exe, , 2
     if(ErrorLevel == 1)
     {
@@ -493,7 +493,7 @@ return
     KeyWait, c, T3  ; 等待用户实际释放.
     if(ErrorLevel == 1)
         return
-    run,% g_config.cherry_tree_path " " g_config.db_path
+    run,% "*RunAs " g_config.cherry_tree_path " " g_config.db_path
     WinWaitActive, ahk_exe cherrytree.exe, , 2
     if(ErrorLevel == 1)
     {
@@ -507,7 +507,7 @@ return
 open_editor:
     Process Exist
     my_pid := ErrorLevel
-    run,% g_config.cherry_tree_path " " g_config.db_path
+    run,% "*RunAs " g_config.cherry_tree_path " " g_config.db_path
 return
 
 hook_open_label:
@@ -1058,9 +1058,11 @@ db_parse(DB)
         arr_cmds_pinyin.Push(str)
     }
 
+	/*
     sql := "update node set tags=node_id"
     If !DB.Exec(sql)
         MsgBox, 16, SQLite Error, % "Msg:`t" . DB.ErrorMsg . "`nCode:`t" . DB.ErrorCode
+	*/
 
     save_obj_config(g_map_py, g_map_py_path)
     g_config.last_parse_time := A_now
