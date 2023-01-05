@@ -5,8 +5,8 @@
 
 * cherrytree下载路径：https://www.giuspen.com/cherrytree/
 * 定制版本可以快速跳转
-链接：https://pan.baidu.com/s/1TNaIRfu1sLsQIhHFQetq0Q?pwd=zhji 
-提取码：zhji 
+链接：https://pan.baidu.com/s/1romeZMHpUX9SPxnD5ZWtlw?pwd=2hpl 
+提取码：2hpl 
 
 使用说明：
 
