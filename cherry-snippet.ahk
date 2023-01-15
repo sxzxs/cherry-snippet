@@ -990,13 +990,30 @@ db_parse(DB)
     }
 
     id_path := {}
+	;k id, v father
     for k,v in map_father
     {
         id_path[k] := {}
         id_path[k]["father_id"] := []
         path_string := obj_sql_node["map_node"][k][2]
+		if(instr(obj_sql_node["map_node"][k][5], "屏蔽"))
+		{
+			log.info("屏蔽节点", k,obj_sql_node["map_node"][k][2])
+			id_path.Delete(k)
+			Continue
+		}
         loop
         {
+			if(v != 0)
+			{
+				tag := obj_sql_node["map_node"][v][5]
+				if(InStr(tag, "屏蔽"))
+				{
+					log.info("屏蔽节点", k,obj_sql_node["map_node"][k][2], "父节点有 屏蔽 标签", v)
+					id_path.Delete(k)
+					break
+				}
+			}
             if(map_father.HasKey(v))
             {
                 path_string := obj_sql_node["map_node"][v][2] "-" path_string
