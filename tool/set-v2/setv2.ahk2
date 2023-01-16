@@ -100,6 +100,7 @@ main()
             static key_edit_new := g_config["key_edit_new"]
             static key_open_editor := g_config["key_open_editor"]
             static hook_open := g_config["hook_open"]
+			static key_quick_switch_node := g_config['key_quick_switch_node']
             ;searchbox
             static win_w := g_config["win_w"]
             static win_search_box_back_color := _Imgui_bgr2rgb(Integer(g_config["win_search_box_back_color"]))
@@ -194,6 +195,7 @@ main()
                     _ImGui_InputText("增加一条指令##add_a_command", &key_edit_new)
                     _ImGui_InputText("打开命令添加界面##open_command_page", &key_open_editor)
                     _ImGui_InputText("hook模式快捷键##hook_mode_key", &hook_open)
+                    _ImGui_InputText("跳转到CherryTree的当前节点##key_quick_switch_node", &key_quick_switch_node)
 
                     _ImGui_EndTabItem()
                 }
@@ -278,6 +280,7 @@ main()
                 g_config["key_edit_new"] := key_edit_new
                 g_config["key_open_editor"] := key_open_editor
                 g_config["hook_open"] := hook_open
+                g_config["key_quick_switch_node"] := key_quick_switch_node
                 g_config["win_w"] := win_w
                 g_config["win_search_box_back_color"] := Format("0x{:06X}", _Imgui_bgr2rgb(win_search_box_back_color & 0xffffff))
 

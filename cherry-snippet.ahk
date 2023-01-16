@@ -188,8 +188,8 @@ Hotkey,% g_config.key_open_search_box , main_label
 Hotkey,% g_config.key_send , label_send_command
 Hotkey,% g_config.key_open_editor , open_editor
 Hotkey,% g_config.key_edit_now , edit_now
-;Hotkey,% g_config.key_edit_new , edit_new
 Hotkey,% g_config.hook_open , hook_open_label
+Hotkey,% g_config.key_quick_switch_node , key_quick_switch_node
 
 Menu, Tray, Icon, %A_ScriptDir%\Icons\super-command.ico
 Menu, Tray, NoStandard
@@ -467,43 +467,6 @@ edit_now_sub:
     goto GuiEscape
 return
 
-~$^c::
-    if(!WinActive("ahk_id " MyGuiHwnd) || g_command == "")
-        return
-    gosub GuiEscape
-
-    run,% "*RunAs " g_config.cherry_tree_path " " g_config.db_path
-    WinWaitActive, ahk_exe cherrytree.exe, , 2
-    if(ErrorLevel == 1)
-    {
-        log.info("no")
-        return
-    }
-
-    pos := InStr(g_command, "]", CaseSensitive := false, StartingPos := 0, Occurrence := 1)
-    command := SubStr(g_command, 2, pos - 2)
-    log.info(command)
-    if(command != "")
-        sender.zmq_send_string(command, zmq.ZMQ_DONTWAIT)
-return
-    ;g_text_rendor_clip.RenderOnScreen("cherry tree 跳转, 请先激活cherry tree 窗口", "t:2000 c:#F9E486 y:75vh r:10%")
-    KeyWait, Ctrl, T3  ; 等待用户实际释放.
-    if(ErrorLevel == 1)
-        return
-    KeyWait, c, T3  ; 等待用户实际释放.
-    if(ErrorLevel == 1)
-        return
-    run,% "*RunAs " g_config.cherry_tree_path " " g_config.db_path
-    WinWaitActive, ahk_exe cherrytree.exe, , 2
-    if(ErrorLevel == 1)
-    {
-        log.info("no")
-        return
-    }
-
-    gosub copy_command_to_editor
-return
-
 open_editor:
     Process Exist
     my_pid := ErrorLevel
@@ -524,6 +487,24 @@ hook_open_label:
     SacHook.KeyOpt("{Backspace}", "N")
     SacHook.Start()
     update_btt()
+return
+key_quick_switch_node:
+	if(!WinActive("ahk_id " MyGuiHwnd) || g_command == "")
+		return
+	gosub GuiEscape
+
+	run,% "*RunAs " g_config.cherry_tree_path " " g_config.db_path
+	WinWaitActive, ahk_exe cherrytree.exe, , 2
+	if(ErrorLevel == 1)
+	{
+		log.info("no")
+		return
+	}
+	pos := InStr(g_command, "]", CaseSensitive := false, StartingPos := 0, Occurrence := 1)
+	command := SubStr(g_command, 2, pos - 2)
+	log.info(command)
+	if(command != "")
+		sender.zmq_send_string(command, zmq.ZMQ_DONTWAIT)
 return
 
 !q::
