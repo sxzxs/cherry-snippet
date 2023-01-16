@@ -127,6 +127,7 @@ global g_hook_mode := false
 global g_should_reload := false
 global g_my_menu_map := { "编辑当前命令: " convert_key2str(g_config.key_edit_now) : ["edit_now", A_ScriptDir "\Icons\编辑.ico"]
                             , "编辑全部命令: " convert_key2str(g_config.key_open_editor) : ["open_editor", A_ScriptDir "\Icons\编辑全部.ico"]
+                            , "cherryTree跳转到当前命令: " convert_key2str(g_config.key_quick_switch_node) : ["key_quick_switch_node", A_ScriptDir "\Icons\cherry_black.ico"]
                             , "发送到窗口: " convert_key2str(g_config.key_send) : ["label_send_command", A_ScriptDir "\Icons\发送.ico"]
                             , "复制结果: " convert_key2str(g_config.key_open_search_box) : ["label_menu_copy_data", A_ScriptDir "\Icons\复制.ico"]
                             , "设置[Need DX11]" : ["open_setv2", A_ScriptDir "\Icons\设置.ico"]
