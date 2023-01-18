@@ -185,7 +185,7 @@ db_parse(DB)
 log.info("end")
 
 ;注册热键
-Hotkey,% g_config.key_open_search_box , main_label
+Hotkey,% g_config.key_open_search_box , label_key_open_search_box
 Hotkey,% g_config.key_send , label_send_command
 Hotkey,% g_config.key_open_editor , open_editor
 Hotkey,% g_config.key_edit_now , edit_now
@@ -475,6 +475,11 @@ open_editor:
 return
 
 hook_open_label:
+	if(g_config.is_hook_open_double_press) ;判断是否双击
+	{
+		if(!DoublePress())
+			return
+	}
     g_hook_strings := ""
     g_hook_list_strings := ""
     g_hook_mode := true
@@ -508,6 +513,12 @@ key_quick_switch_node:
 		sender.zmq_send_string(command, zmq.ZMQ_DONTWAIT)
 return
 
+label_key_open_search_box:
+if(g_config.is_open_search_box_double_press) ;判断是否双击
+{
+	if(!DoublePress())
+		return
+}
 !q::
 label_menu_copy_data:
 main_label:
@@ -1477,4 +1488,11 @@ DrawHXGUI(codetext, Textobj, x:=0, y:=0, localpos:= 0, Textdirection:=0
 		Gdip_DeleteBrush(_value)
 	Gdip_DeletePen(pPen_Border)
 	WinSet, AlwaysOnTop, On, ahk_id%@TSF%
+}
+DoublePress() {
+    if (A_ThisHotkey = A_PriorHotkey) and (A_TimeSincePriorHotkey < 500) {
+        return true
+    } else {
+        return false
+    }
 }
