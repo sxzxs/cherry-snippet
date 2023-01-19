@@ -124,6 +124,8 @@ main()
             static tooltip_text_color := _Imgui_bgr2rgb(Integer(g_config["tooltip_text_color"]))
             static tooltip_font_size := g_config["tooltip_font_size"]
             static tooltip_random := g_config["tooltip_random"]
+			static is_use_html_preview := g_config["is_use_html_preview"]
+            static html_path := g_config["html_path"]
             ;other
             static auto_english := g_config["auto_english"]
             static tooltip_help := g_config["tooltip_help"]
@@ -187,6 +189,11 @@ main()
                     _ImGui_Text("预览随机颜色:")
                     _ImGui_SameLine()
                     _Imgui_toggle_button("是否预览随机颜色[0/1]##tooltip_random", &tooltip_random)
+                    _ImGui_Text("使用HTML预览:")
+                    _ImGui_SameLine()
+                    _Imgui_toggle_button("使用HTML预览##is_use_html_preview", &is_use_html_preview)
+                    _ImGui_InputText("cherryTree导出HTML路径##html_path", &html_path)
+
                     _ImGui_EndTabItem()
                 }
                 if(_ImGui_BeginTabItem("快捷键设置"))
@@ -308,6 +315,8 @@ main()
                 g_config["tooltip_text_color"] := Format("0x{:06X}", _Imgui_bgr2rgb(tooltip_text_color & 0xffffff))
                 g_config["tooltip_font_size"] := tooltip_font_size
                 g_config["tooltip_random"] := tooltip_random
+                g_config["is_use_html_preview"] := is_use_html_preview
+                g_config["html_path"] := html_path
 
                 g_config["auto_english"] := auto_english
                 g_config["tooltip_help"] := tooltip_help

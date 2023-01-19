@@ -114,6 +114,7 @@ global cmds := ""
 global arr_cmds := []
 global arr_cmds_pinyin := []
 global g_map_cmds := {}
+global g_node_path := {}
 global g_text_rendor := TextRender()
 global g_text_rendor_clip := TextRender()
 global g_hook_rendor := TextRender()
@@ -275,6 +276,11 @@ sender.connect("tcp://localhost:19935")
 
 ;sender.zmq_send_string("hello world")
 
+
+;activex gui preview gui
+Gui, 3: Add , ActiveX ,x0 y0 w640 h480 vPane , Shell.Explorer
+Gui, 3: +AlwaysOntop
+Gui, 3: -Caption  +ToolWindow -DPIScale -Border
 return  ; 脚本的自动运行段结束.
 
 monitor_date_file:
@@ -668,6 +674,7 @@ return
 GuiEscape:
     g_is_rain := false
     Gui,2: hide
+	gui,3: hide
     Gui,Hide
     g_text_rendor.Clear("")
     g_text_rendor.FreeMemory()
@@ -823,7 +830,7 @@ preview_command(command)
     if(preview_number == 5000)
         g_should_reload := true
     CoordMode, ToolTip, Screen
-    global  menue_create_pid, log, gui_x, gui_y, g_curent_text, g_command
+    global  menue_create_pid, log, gui_x, gui_y, g_curent_text, g_command, Pane, g_node_path
 
     id := g_map_cmds[command]
     if(g_map_cmds.HasKey(command))
@@ -837,10 +844,26 @@ preview_command(command)
 
     UnityPath := result.rows[1][3]
 
+
     g_command := command
     g_curent_text := UnityPath
     UnityPath := command "`n" UnityPath
     GuiControlGet, out, Pos, Query
+
+	;html 预览
+	log.info(html_file_path)
+	html_file_path := g_config.html_path "\" g_node_path[id]["path_file"] ".html"
+
+	if(g_config.is_use_html_preview && FileExist(html_file_path) && !g_hook_mode)
+	{
+		Pane.Navigate(html_file_path)
+		x := g_config.win_x + g_config.win_w
+		y := g_config.win_y
+		Gui, 3: Show,% "w640 h480 NoActivate" "x" x " y" y
+		return
+	}
+	Gui, 3: hide
+
     if(!WinExist("超级命令添加工具") && UnityPath != "")
     {
         x := g_config.win_x + g_config.win_w + 12
@@ -989,6 +1012,7 @@ db_parse(DB)
         id_path[k] := {}
         id_path[k]["father_id"] := []
         path_string := obj_sql_node["map_node"][k][2]
+		path_string_file := obj_sql_node["map_node"][k][2]
 		if(instr(obj_sql_node["map_node"][k][5], "屏蔽"))
 		{
 			log.info("屏蔽节点", k,obj_sql_node["map_node"][k][2])
@@ -1010,17 +1034,22 @@ db_parse(DB)
             if(map_father.HasKey(v))
             {
                 path_string := obj_sql_node["map_node"][v][2] "-" path_string
+				path_string_file := obj_sql_node["map_node"][v][2] "--" path_string_file
                 id_path[k]["father_id"].Push(v)
             }
             else
             {
                 id_path[k]["father_id"].Push(0)
                 id_path[k]["path"] :=  "[" k "]" path_string 
+				path_string_file := StrReplace(path_string_file, A_Space, "_")
+				path_string_file := StrReplace(path_string_file, "/", "-")
+                id_path[k]["path_file"] := path_string_file "_" k
                 break
             }
             v := map_father[v]
         }
     }
+	g_node_path := id_path
 
     g_map_cmds := {}
     for k,v in id_path
