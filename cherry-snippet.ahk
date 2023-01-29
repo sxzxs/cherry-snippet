@@ -279,7 +279,7 @@ sender.connect("tcp://localhost:19935")
 
 ;activex gui preview gui
 Gui, 3: Add , ActiveX ,x0 y0 w640 h480 vPane , Shell.Explorer
-Gui, 3: +AlwaysOntop
+Gui, 3: +AlwaysOntop +hwndHtmlHwnd
 Gui, 3: -Caption  +ToolWindow -DPIScale -Border
 return  ; 脚本的自动运行段结束.
 
@@ -302,7 +302,11 @@ if(date_last_change_time > g_config.last_parse_time)
             if(instr(this_title, "*"))
                 log.info("not save")
             else
+			{
+				cmd := """" g_config.cherry_tree_path  """" " " """" g_config.db_path """" " -x "  """" g_config.html_path """" " -w -S"
+				run,% cmd
                 Reload
+			}
         }
     }
 }
@@ -852,14 +856,24 @@ preview_command(command)
 
 	;html 预览
 	log.info(html_file_path)
-	html_file_path := g_config.html_path "\" g_node_path[id]["path_file"] ".html"
+	html_file_path := g_config.html_path "\data.ctb_HTML\" g_node_path[id]["path_file"] ".html"
 
 	if(g_config.is_use_html_preview && FileExist(html_file_path) && !g_hook_mode)
 	{
 		Pane.Navigate(html_file_path)
+
+		;hdiv:=WB.document.getElementById("mainDiv").offsetHeight
+		element := Pane.document.getElementsByTagName("div")
+		log.info(element.Length)
+		if(element.Length != 0)
+		{
+			hdiv:= element[0].offsetHeight
+		}
+
 		x := g_config.win_x + g_config.win_w
 		y := g_config.win_y
-		Gui, 3: Show,% "w640 h480 NoActivate" "x" x " y" y
+		log.info(Pane.width)
+		Gui, 3: Show,% "w760 h530 NoActivate" "x" x " y" y
 		return
 	}
 	Gui, 3: hide
@@ -1208,7 +1222,11 @@ saveconfig(config)
 
 WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) 
 {
-    global MyGuiHwnd, g_config
+    global MyGuiHwnd, g_config, HtmlHwnd
+	if(WinActive("ahk_id " HtmlHwnd))
+	{
+		return
+	}
 	PostMessage, 0xA1, 2 ; WM_NCLBUTTONDOWN
 	KeyWait, LButton, U
     WinGetPos, X, Y, W, H, ahk_id %MyGuiHwnd%
