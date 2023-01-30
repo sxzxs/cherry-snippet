@@ -3,22 +3,21 @@
 * 通过设置关键字检索文本，文本可以预览并复制到粘贴板。如果文本是ahk，python,bat等脚本则可以执行
 * 检索支持拼音首字母、全拼等
 
-* cherrytree下载路径：https://www.giuspen.com/cherrytree/
-* 定制版本可以快速跳转
-链接：https://pan.baidu.com/s/1romeZMHpUX9SPxnD5ZWtlw?pwd=2hpl 
-提取码：2hpl 
+* cherrytree 定制版下载路径：链接：https://pan.baidu.com/s/1romeZMHpUX9SPxnD5ZWtlw?pwd=2hpl 提取码：2hpl 
 
 # 使用说明：
 
 1、打开 cherry-snippet.exe
 
-2、选择 cherry tree.exe的路径
+2、选择 cherrytree.exe的路径
 
-3、选择 cherry tree 数据文件 .ctb路径
+3、选择 cherrytree 数据文件 .ctb路径
 
 4、默认shift+enter执行搜索， shift+space hook搜索
 
 5、cherrytree定制版支持搜索后快速跳转，默认快捷键是ctrl+c
+
+6、html预览，需要配置html导出路径
 
 # 默认按键使用说明
 * 打开搜索框 shift+enter 
@@ -28,10 +27,6 @@
 * 发送文本到窗口 ctrl+enter 
 * 编辑当前命令 ctrl+e 
 * hook 输入法模式  shift+space
-
-
-# 修改热键
-右键托盘图标或者命令界面
 
 # 其他支持的脚本语言执行
 * bat 脚本开头 ::bat
