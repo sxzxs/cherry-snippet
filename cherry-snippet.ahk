@@ -131,8 +131,7 @@ global g_my_menu_map := { "编辑当前命令: " convert_key2str(g_config.key_ed
                             , "cherryTree跳转到当前命令: " convert_key2str(g_config.key_quick_switch_node) : ["key_quick_switch_node", A_ScriptDir "\Icons\cherry_black.ico"]
                             , "发送到窗口: " convert_key2str(g_config.key_send) : ["label_send_command", A_ScriptDir "\Icons\发送.ico"]
                             , "复制结果: " convert_key2str(g_config.key_open_search_box) : ["label_menu_copy_data", A_ScriptDir "\Icons\复制.ico"]
-                            , "设置[Need DX11]" : ["open_setv2", A_ScriptDir "\Icons\设置.ico"]
-                            , "设置" : ["open_set", A_ScriptDir "\Icons\设置.ico"]}
+                            , "设置[Need DX11]" : ["open_setv2", A_ScriptDir "\Icons\设置.ico"]}
 
 global g_wubi := ""
 global g_total_show_number := g_config["win_hook_total_show_number"]
@@ -200,8 +199,8 @@ if(FileExist(startuplnk))
     Menu, Tray, Check, 开机启动
 Menu, Tray, add, 帮助,  open_github
 Menu, Tray, icon, 帮助,% A_ScriptDir "\Icons\帮助.ico"
-Menu, Tray, add, 设置,  open_set
-Menu, Tray, icon, 设置,% A_ScriptDir "\Icons\设置.ico"
+;Menu, Tray, add, 设置,  open_set
+;Menu, Tray, icon, 设置,% A_ScriptDir "\Icons\设置.ico"
 Menu, Tray, add, 设置[Need DX11],  open_setv2
 Menu, Tray, icon, 设置[Need DX11],% A_ScriptDir "\Icons\设置.ico"
 Menu, Tray, add,% "打开搜索框: " convert_key2str(g_config.key_open_search_box),  main_label
@@ -1362,7 +1361,7 @@ open_set:
 return
 
 open_github:
-run,https://pan.baidu.com/s/1_tzJ8SFvCQJXvVo5YxUEMg?pwd=1w2b
+;run,https://pan.baidu.com/s/1_tzJ8SFvCQJXvVo5YxUEMg?pwd=1w2b
 run,https://github.com/sxzxs/cherry-snippet
 run,https://zhangyue667.lanzouh.com/DirectXRepairEnhanced
 run,https://blog.csdn.net/vbcom/article/details/7245186
