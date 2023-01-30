@@ -302,8 +302,11 @@ if(date_last_change_time > g_config.last_parse_time)
                 log.info("not save")
             else
 			{
-				cmd := """" g_config.cherry_tree_path  """" " " """" g_config.db_path """" " -x "  """" g_config.html_path """" " -w -S"
-				run,% cmd
+				if(g_config.is_use_html_preview)
+				{
+					cmd := """" g_config.cherry_tree_path  """" " " """" g_config.db_path """" " -x "  """" g_config.html_path """" " -w -S"
+					run,% cmd
+				}
                 Reload
 			}
         }
