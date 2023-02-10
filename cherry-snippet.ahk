@@ -992,8 +992,10 @@ handle_command(command)
         execute_python(UnityPath)
     else if(SubStr(UnityPath, 1, 5) == "::bat")
         execute_bat(UnityPath)
+    else if(SubStr(UnityPath, 1, 3) == ";v1" || SubStr(UnityPath, 1, 3) == "run")
+    	ExecScript(UnityPath, A_ScriptDir, A_ScriptDir "\v1\AutoHotkey.exe")
     else
-        ExecScript(UnityPath, A_ScriptDir, A_ScriptDir "\v1\AutoHotkey.exe")
+        send_command(command)
 }
 
 db_parse(DB)
