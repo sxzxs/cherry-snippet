@@ -1,4 +1,5 @@
-﻿# 功能介绍
+请更新到最新版本：https://github.com/sxzxs/cherry-snippet-v2
+# 功能介绍
 * 借助cherrytree作为代码片段工具
 * 通过设置关键字检索文本，文本可以预览并复制到粘贴板。如果文本是ahk，python,bat等脚本则可以执行
 * 检索支持拼音首字母、全拼等
